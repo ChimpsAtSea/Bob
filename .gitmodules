@@ -1,0 +1,66 @@
+[submodule "thirdparty/discord-rpc"]
+	path = thirdparty/discord-rpc
+	url = https://github.com/ChimpsAtSea/discord-rpc.git
+[submodule "thirdparty/lz4/lz4"]
+	path = thirdparty/lz4/lz4
+	url = https://github.com/ChimpsAtSea/lz4.git
+[submodule "thirdparty/pugixml"]
+	path = thirdparty/pugixml
+	url = https://github.com/zeux/pugixml.git
+[submodule "thirdparty/assimp/assimp"]
+	path = thirdparty/assimp/assimp
+	url = https://github.com/ChimpsAtSea/assimp.git
+[submodule "thirdparty/d3d12raytracingfallback/d3d12raytracingfallback"]
+	path = thirdparty/d3d12raytracingfallback/d3d12raytracingfallback
+	url = https://github.com/ChimpsAtSea/D3D12RaytracingFallback.git
+[submodule "thirdparty/directx-headers"]
+	path = thirdparty/directx-headers
+	url = https://github.com/microsoft/DirectX-Headers.git
+[submodule "thirdparty/directxmesh/directxmesh"]
+	path = thirdparty/directxmesh/directxmesh
+	url = https://github.com/ChimpsAtSea/DirectXMesh.git
+[submodule "thirdparty/directxtex/directxtex"]
+	path = thirdparty/directxtex/directxtex
+	url = https://github.com/ChimpsAtSea/DirectXTex.git
+[submodule "thirdparty/ffmpeg/ffmpeg"]
+	path = thirdparty/ffmpeg/ffmpeg
+	url = https://github.com/ChimpsAtSea/FFmpeg.git
+[submodule "thirdparty/gn/gn"]
+	path = thirdparty/gn/gn
+	url = https://github.com/ChimpsAtSea/gn.git
+[submodule "thirdparty/iconfontcppheaders/iconfontcppheaders"]
+	path = thirdparty/iconfontcppheaders/iconfontcppheaders
+	url = https://github.com/ChimpsAtSea/IconFontCppHeaders.git
+[submodule "thirdparty/imgui/imgui"]
+	path = thirdparty/imgui/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "thirdparty/lzxlib/lzxlib"]
+	path = thirdparty/lzxlib/lzxlib
+	url = https://github.com/ChimpsAtSea/lzxlib
+[submodule "thirdparty/mimalloc/mimalloc"]
+	path = thirdparty/mimalloc/mimalloc
+	url = https://github.com/ChimpsAtSea/mimalloc.git
+[submodule "thirdparty/murmur3/murmur3"]
+	path = thirdparty/murmur3/murmur3
+	url = https://github.com/ChimpsAtSea/murmur3.git
+[submodule "thirdparty/ninja/ninja"]
+	path = thirdparty/ninja/ninja
+	url = https://github.com/ChimpsAtSea/ninja.git
+[submodule "thirdparty/oozle/oozle"]
+	path = thirdparty/oozle/oozle
+	url = https://github.com/ChimpsAtSea/Oozle.git
+[submodule "thirdparty/xatlas/xatlas"]
+	path = thirdparty/xatlas/xatlas
+	url = https://github.com/ChimpsAtSea/xatlas.git
+[submodule "thirdparty/xxhash/xxhash"]
+	path = thirdparty/xxhash/xxhash
+	url = https://github.com/ChimpsAtSea/xxHash.git
+[submodule "thirdparty/xxhash/xxhash_cx"]
+	path = thirdparty/xxhash/xxhash_cx
+	url = https://github.com/ChimpsAtSea/xxhash_cx.git
+[submodule "thirdparty/yasm/yasm"]
+	path = thirdparty/yasm/yasm
+	url = https://github.com/yasm/yasm.git
+[submodule "thirdparty/zlib/zlib"]
+	path = thirdparty/zlib/zlib
+	url = https://github.com/ChimpsAtSea/zlib.git
