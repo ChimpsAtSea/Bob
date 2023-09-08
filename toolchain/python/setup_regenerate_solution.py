@@ -1,6 +1,5 @@
 import os
 import sys
-import argparse
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__))) # Allow Local Imports
 

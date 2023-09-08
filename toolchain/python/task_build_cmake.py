@@ -16,7 +16,6 @@ class CMakeBuildTask(BuildTask):
         cmake_version = '3.25.2'
         cmake_extract_directory = os.path.join(util.get_thirdparty_dir(), 'cmake')
         cmake_directory = os.path.join(cmake_extract_directory, f'cmake-{cmake_version}-windows-x86_64/bin')
-        util.bcs_cmake_dir = cmake_directory
 
         url = f'https://github.com/Kitware/CMake/releases/download/v{cmake_version}/cmake-{cmake_version}-windows-x86_64.zip'
         cache_filename = f'cmake-{cmake_version}-windows-x86_64.zip'
