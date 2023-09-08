@@ -10,8 +10,8 @@ class ZlibBuildTask(VisualCPPBuildTask):
         self.use_shared_libs : bool = use_shared_libs
         self.link_configuration = 'shared' if self.use_shared_libs else 'static'
         self.build_folder_name = f'zlib_build_{self.msvc_target}_{self.link_configuration}'
-        self.source_directory = os.path.join(util.bcs_third_party_dir, 'zlib/zlib')
-        self.build_directory = os.path.join(util.bcs_third_party_dir, 'zlib', self.build_folder_name)
+        self.source_directory = os.path.join(util.get_thirdparty_dir(), 'zlib/zlib')
+        self.build_directory = os.path.join(util.get_thirdparty_dir(), 'zlib', self.build_folder_name)
         self.output_library = os.path.join(self.build_directory, 'zlib.lib' if self.use_shared_libs else 'zlibstatic.lib')
         self.output_binary = os.path.join(self.build_directory, 'zlib1.dll') if self.use_shared_libs else None
 
@@ -24,7 +24,7 @@ class ZlibBuildTask(VisualCPPBuildTask):
             return # Don't rebuild
 
         paths = [
-            #os.path.join(util.bcs_third_party_dir, 'ninja'),
+            #os.path.join(util.get_thirdparty_dir(), 'ninja'),
         ]
         self.environment['PATH'] = ';'.join([self.environment['PATH']] + paths)
 

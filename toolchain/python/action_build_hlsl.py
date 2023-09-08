@@ -5,7 +5,7 @@ import library_util as util
 import subprocess
 import shlex
 
-directxshadercompiler_directory = os.path.join(util.bcs_third_party_dir, 'directxshadercompiler/directxshadercompiler')
+directxshadercompiler_directory = os.path.join(util.get_thirdparty_dir(), 'directxshadercompiler/directxshadercompiler')
 dxc = os.path.join(directxshadercompiler_directory, 'bin/dxc')
 
 inputs = util.command_line['inputs']

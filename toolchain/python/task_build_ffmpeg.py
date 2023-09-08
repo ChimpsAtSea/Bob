@@ -17,11 +17,11 @@ class FFmpegBuildTask(VisualCPPBuildTask):
     def build(self):
         super().build()
         
-        bash = os.path.join(util.bcs_msys2_dir, 'usr/bin/bash')
-        shell_script = os.path.join(util.bcs_third_party_dir, 'ffmpeg/build_ffmpeg.sh')
-        build_directory = os.path.join(util.bcs_third_party_dir, f'ffmpeg/ffmpeg_build_{self.msvc_target}_{self.link_config}')
-        source_directory = os.path.join(util.bcs_third_party_dir, f'ffmpeg/ffmpeg')
-        yasm_directory = os.path.join(util.bcs_third_party_dir, f'yasm/yasm_build')
+        bash = os.path.join(util.get_msys2_dir(), 'usr/bin/bash')
+        shell_script = os.path.join(util.get_thirdparty_dir(), 'ffmpeg/build_ffmpeg.sh')
+        build_directory = os.path.join(util.get_thirdparty_dir(), f'ffmpeg/ffmpeg_build_{self.msvc_target}_{self.link_config}')
+        source_directory = os.path.join(util.get_thirdparty_dir(), f'ffmpeg/ffmpeg')
+        yasm_directory = os.path.join(util.get_thirdparty_dir(), f'yasm/yasm_build')
 
         if self.link_config == 'shared':
             self.output_libraries = [
@@ -64,8 +64,8 @@ class FFmpegBuildTask(VisualCPPBuildTask):
 
         paths = [
             yasm_directory,
-            util.bcs_msys2_dir,
-            os.path.join(util.bcs_third_party_dir, 'yasm_build/Release'),
+            util.get_msys2_dir(),
+            os.path.join(util.get_thirdparty_dir(), 'yasm_build/Release'),
         ]
         self.environment['PATH'] = ';'.join([self.environment['PATH']] + paths)
 

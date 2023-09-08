@@ -6,7 +6,7 @@ from task_manager import BuildTaskManager
 from task_build_copy import CopyBuildTask
 util.async_start()
 
-directxshadercompiler_directory = os.path.join(util.bcs_third_party_dir, 'directxshadercompiler/directxshadercompiler')
+directxshadercompiler_directory = os.path.join(util.get_thirdparty_dir(), 'directxshadercompiler/directxshadercompiler')
 dxc = os.path.join(directxshadercompiler_directory, 'bin/dxc')
 
 #print('target_src_dir', util.target_src_dir)

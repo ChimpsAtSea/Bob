@@ -10,15 +10,13 @@ class GNBuildTask(VisualCPPBuildTask):
 
     def build(self):
         super().build()
-        
-        source_directory = os.path.join(util.bcs_third_party_dir, f'gn/gn')
-        python_script = os.path.join(source_directory, 'build/gen.py')
-        build_directory = os.path.join(util.bcs_third_party_dir, f'gn/gn_build')
 
-        util.bcs_gn_dir = build_directory
-
-        if not util.command_line['build-gn'] and os.path.exists(os.path.join(build_directory, 'gn.exe')):
+        if os.path.exists(util.get_gn()):
             return # Don't rebuild
+        
+        source_directory = os.path.join(util.get_thirdparty_dir(), f'gn/gn')
+        python_script = os.path.join(source_directory, 'build/gen.py')
+        build_directory = os.path.join(util.get_thirdparty_dir(), f'gn/gn_build')
 
         paths = [
             os.path.join('C:/Program Files/Git/bin'), #TODO Remove this system path!!!

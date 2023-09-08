@@ -11,16 +11,14 @@ class YasmBuildTask(VisualCPPBuildTask):
     def build(self):
         super().build()
         
-        source_directory = os.path.join(util.bcs_third_party_dir, f'yasm/yasm')
-        build_directory = os.path.join(util.bcs_third_party_dir, f'yasm/yasm_build')
-
-        util.bcs_yasm_dir = build_directory
+        source_directory = os.path.join(util.get_thirdparty_dir(), f'yasm/yasm')
+        build_directory = os.path.join(util.get_thirdparty_dir(), f'yasm/yasm_build')
 
         if os.path.exists(os.path.join(build_directory, 'yasm.exe')):
             return # Don't rebuild
 
         paths = [
-            #os.path.join(util.bcs_third_party_dir, 'ninja'),
+            #os.path.join(util.get_thirdparty_dir(), 'ninja'),
         ]
         self.environment['PATH'] = ';'.join([self.environment['PATH']] + paths)
 

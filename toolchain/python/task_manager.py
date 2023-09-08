@@ -81,9 +81,6 @@ class VisualCPPBuildTask(BuildTask):
         self.msvc_host = 'HostX86'
         self.msvc_host_short = 'x64' if architecture == '64bit' else 'x86'
 
-        if not util.bcs_ewdk_dir:
-            raise Exception("EWDK Directory Not Set")
-
         self.msvc_target = msvc_target
 
         environment = os.environ.copy()
@@ -145,7 +142,7 @@ class VisualCPPBuildTask(BuildTask):
     def build(self):
         super().build()
         
-        cl = util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/bin/{self.msvc_host}/{self.msvc_target}', "cl.exe")
+        cl = util.get_ewdk_dir(os.path.join(f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/bin/{self.msvc_host}/{self.msvc_target}', 'cl.exe'))
         if not os.path.exists(cl):
             raise Exception(f"EWDK invalid. Can't find {cl}")
 

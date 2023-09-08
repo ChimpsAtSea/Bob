@@ -11,17 +11,16 @@ class NinjaBuildTask(VisualCPPBuildTask):
     def build(self):
         super().build()
         
-        source_directory = os.path.join(util.bcs_third_party_dir, f'ninja/ninja')
-        build_directory = os.path.join(util.bcs_third_party_dir, f'ninja/ninja_build')
+        source_directory = os.path.join(util.get_thirdparty_dir(), f'ninja/ninja')
+        build_directory = os.path.join(util.get_thirdparty_dir(), f'ninja/ninja_build')
 
-        util.bcs_ninja_dir = build_directory
         ninja = util.get_ninja()
 
         if os.path.exists(ninja):
             return # Don't rebuild
 
         paths = [
-            #os.path.join(util.bcs_third_party_dir, 'ninja'),
+            #os.path.join(util.get_thirdparty_dir(), 'ninja'),
         ]
         self.environment['PATH'] = ';'.join([self.environment['PATH']] + paths)
 

@@ -16,8 +16,8 @@ class MimallocBuildTask(VisualCPPBuildTask):
         self.output_suffix = '-debug' if target_config == 'debug' else ''
 
         self.build_folder_name = f'mimalloc_build_{self.target_config}_{self.msvc_target}_{self.link_configuration}'
-        self.source_directory = os.path.join(util.bcs_third_party_dir, 'mimalloc/mimalloc')
-        self.build_directory = os.path.join(util.bcs_third_party_dir, 'mimalloc', self.build_folder_name)
+        self.source_directory = os.path.join(util.get_thirdparty_dir(), 'mimalloc/mimalloc')
+        self.build_directory = os.path.join(util.get_thirdparty_dir(), 'mimalloc', self.build_folder_name)
         self.output_library = os.path.join(self.build_directory, f'mimalloc{self.output_suffix}.lib' if self.use_shared_libs else f'mimalloc-static{self.output_suffix}.lib')
         self.output_binary = os.path.join(self.build_directory, f'mimalloc{self.output_suffix}.dll') if self.use_shared_libs else None
 
@@ -30,7 +30,7 @@ class MimallocBuildTask(VisualCPPBuildTask):
             return # Don't rebuild
 
         paths = [
-            #os.path.join(util.bcs_third_party_dir, 'ninja'),
+            #os.path.join(util.get_thirdparty_dir(), 'ninja'),
         ]
         self.environment['PATH'] = ';'.join([self.environment['PATH']] + paths)
 

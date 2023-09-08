@@ -14,7 +14,7 @@ class CMakeBuildTask(BuildTask):
         super().build()
         
         cmake_version = '3.25.2'
-        cmake_extract_directory = os.path.join(util.bcs_third_party_dir, 'cmake')
+        cmake_extract_directory = os.path.join(util.get_thirdparty_dir(), 'cmake')
         cmake_directory = os.path.join(cmake_extract_directory, f'cmake-{cmake_version}-windows-x86_64/bin')
         util.bcs_cmake_dir = cmake_directory
 
@@ -22,7 +22,7 @@ class CMakeBuildTask(BuildTask):
         cache_filename = f'cmake-{cmake_version}-windows-x86_64.zip'
         output_directory = cmake_extract_directory
 
-        download_filepath = os.path.join(util.bcs_download_cache_dir, cache_filename)
+        download_filepath = os.path.join(util.get_download_cache_dir(), cache_filename)
         download_task = DownloadBuildTask(url, download_filepath)
         extract_task = ExtractBuildTask(download_filepath, output_directory, [download_task])
 

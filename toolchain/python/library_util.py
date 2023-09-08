@@ -8,6 +8,8 @@ import argparse
 import inspect
 from typing import Union, Callable, Iterable, Any, TypeVar, TypeAlias, NewType
 
+ignore_missing_subdirectories = 0
+
 def argparse_is_directory(argument, directory):
     directory = os.path.abspath(directory)
     if not os.path.exists(directory):
@@ -110,7 +112,7 @@ def get_directory_argument(argument_name : str, subdirectory : str):
     if not subdirectory:
         return base_directory
     directory = os.path.join(base_directory, subdirectory)
-    if not os.path.exists(directory):
+    if ignore_missing_subdirectories == 0 and not os.path.exists(directory):
         raise Exception(f'Subdirectory for argument {argument_name} does not exist', argument_name, base_directory, subdirectory, directory)
     return directory
 
@@ -181,7 +183,7 @@ def _get_thirdparty_subdir(name, subdirectory, subpath):
         raise Exception(f'Requested thirdparty directory doesn\'t exist', name, subdirectory, directory)
     if subpath is not None:
         directory = os.path.join(directory, subpath)
-        if not os.path.exists(directory):
+        if ignore_missing_subdirectories == 0 and not os.path.exists(directory):
             raise Exception(f'Requested thirdparty subdirectory doesn\'t exist', name, subdirectory, subpath, directory)
     return directory
 
@@ -202,7 +204,10 @@ def get_python_dir(subpath : str = None):
 def get_ewdk_dir(subpath : str = None):
     return _get_thirdparty_subdir('ewdk', 'EWDK/EWDK_ni_release_svc_prod1_22621_220804-1759', subpath)
 def get_msys2_dir(subpath : str = None):
-    return _get_thirdparty_subdir('msys2', None, subpath)
+    #TODO: Move this into a configuration file
+    msys2_version = 'msys2-base-x86_64-20230127'
+    msys2_subdirectory = f'msys2/{msys2_version}/msys64'
+    return _get_thirdparty_subdir('msys2', msys2_subdirectory, subpath)
 def get_cmake_dir(subpath : str = None):
     return _get_thirdparty_subdir('cmake', None, subpath)
 def get_7z_dir(subpath : str = None):

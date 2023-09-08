@@ -1,9 +1,9 @@
 import os
 import sys
-import argparse
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__))) # Allow Local Imports
 
+import setup_thirdparty # Execute third party
 import library_project_setup as project_setup
 import library_sln as sln
 import library_util as util

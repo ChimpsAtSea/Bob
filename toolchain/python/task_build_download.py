@@ -25,7 +25,7 @@ class DownloadBuildTask(BuildTask):
         process.wait()
 
 def download_extract_task(ExtractTask, url, cache_filename, output_directory, force = False):
-    download_filepath = os.path.join(util.bcs_download_cache_dir, cache_filename)
+    download_filepath = os.path.join(util.get_download_cache_dir(), cache_filename)
     download_task = DownloadBuildTask(url, download_filepath)
     extract_task = ExtractTask(download_filepath, output_directory, [download_task], force)
     return extract_task

@@ -8,15 +8,13 @@ class WinPix3BuildTask(BuildTask):
     def __init__(self, target_cpu : str, _parent_tasks = []):
         super().__init__('WinPix3BuildTask', _parent_tasks)
         self.version = 'winpixeventruntime.1.0.220810001'
-        self.extract_directory = os.path.join(util.bcs_third_party_dir, f'winpix3/{self.version}')
+        self.extract_directory = os.path.join(util.get_thirdparty_dir(), f'winpix3/{self.version}')
         self.directory = os.path.join(self.extract_directory, 'bin', target_cpu.upper())
         self.output_library = os.path.join(self.directory, 'WinPixEventRuntime.lib')
         self.output_binary = os.path.join(self.directory, 'WinPixEventRuntime.dll')
 
     def build(self):
         super().build()
-        
-        util.bcs_winpix3_dir = self.directory
         
         if os.path.exists(self.output_binary):
             return # Don't init
