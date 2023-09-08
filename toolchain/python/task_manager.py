@@ -97,46 +97,46 @@ class VisualCPPBuildTask(BuildTask):
         environment['LINK'] = ''
 
         paths = [
-            os.path.join(util.bcs_ewdk_dir, f''),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/bin/{self.msvc_host}/{msvc_target}'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/VC/VCPackages'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/TestWindow'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/TeamFoundation/Team Explorer'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/bin/Roslyn'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Windows Kits/10/bin/{self.msvc_host_short}'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/Tools/'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/VC/Linux/bin/ConnectionManagerExe'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Windows Kits/10/bin/10.0.22621.0/{self.msvc_host_short}'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Windows Kits/10/tools'),
-            os.path.join(util.bcs_ewdk_dir, f'BuildEnv'),
+            util.get_ewdk_dir(f''),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/bin/{self.msvc_host}/{msvc_target}'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/VC/VCPackages'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/TestWindow'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/CommonExtensions/Microsoft/TeamFoundation/Team Explorer'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/bin/Roslyn'),
+            util.get_ewdk_dir(f'Program Files/Windows Kits/10/bin/{self.msvc_host_short}'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/MSBuild/Current/Bin/amd64'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/Tools/'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/VC/Linux/bin/ConnectionManagerExe'),
+            util.get_ewdk_dir(f'Program Files/Windows Kits/10/bin/10.0.22621.0/{self.msvc_host_short}'),
+            util.get_ewdk_dir(f'Program Files/Windows Kits/10/tools'),
+            util.get_ewdk_dir(f'BuildEnv'),
             os.path.join(environment['SYSTEMROOT'], 'System32') #TODO: Can this be handled better?. Required for cmd.exe
         ]
         environment['PATH'] = ';'.join(paths)
 
         includes = [
-            os.path.join(util.bcs_ewdk_dir, 'Program Files/Windows Kits/10/include/10.0.22621.0/ucrt'),
-            os.path.join(util.bcs_ewdk_dir, 'Program Files/Windows Kits/10/include/10.0.22621.0/um'),
-            os.path.join(util.bcs_ewdk_dir, 'Program Files/Windows Kits/10/include/10.0.22621.0/shared'),
-            os.path.join(util.bcs_ewdk_dir, 'Program Files/Windows Kits/10/include/10.0.22621.0/winrt'),
-            os.path.join(util.bcs_ewdk_dir, 'Program Files/Windows Kits/10/include/10.0.22621.0/cppwinrt'),
-            os.path.join(util.bcs_ewdk_dir, 'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/include'),
+            util.get_ewdk_dir('Program Files/Windows Kits/10/include/10.0.22621.0/ucrt'),
+            util.get_ewdk_dir('Program Files/Windows Kits/10/include/10.0.22621.0/um'),
+            util.get_ewdk_dir('Program Files/Windows Kits/10/include/10.0.22621.0/shared'),
+            util.get_ewdk_dir('Program Files/Windows Kits/10/include/10.0.22621.0/winrt'),
+            util.get_ewdk_dir('Program Files/Windows Kits/10/include/10.0.22621.0/cppwinrt'),
+            util.get_ewdk_dir('Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/include'),
         ]
         environment['INCLUDE'] = ';'.join(includes)
 
         compiler_library = [
-            os.path.join(util.bcs_ewdk_dir, 'Program Files/Windows Kits/10/UnionMetadata/10.0.22621.0'),
-            os.path.join(util.bcs_ewdk_dir, 'Program Files/Windows Kits/10/References/10.0.22621.0'),
+            util.get_ewdk_dir('Program Files/Windows Kits/10/UnionMetadata/10.0.22621.0'),
+            util.get_ewdk_dir('Program Files/Windows Kits/10/References/10.0.22621.0'),
         ]
         environment['LIBPATH'] = ';'.join(compiler_library)
 
         linker_library = [
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Windows Kits/NETFXSDK/4.8/lib/um/{msvc_target}'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Windows Kits/10/lib/10.0.22621.0/ucrt/{msvc_target}'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Windows Kits/10/lib/10.0.22621.0/um/{msvc_target}'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/lib/{msvc_target}'),
-            os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/atlmfc/lib/{msvc_target}'),
+            util.get_ewdk_dir(f'Program Files/Windows Kits/NETFXSDK/4.8/lib/um/{msvc_target}'),
+            util.get_ewdk_dir(f'Program Files/Windows Kits/10/lib/10.0.22621.0/ucrt/{msvc_target}'),
+            util.get_ewdk_dir(f'Program Files/Windows Kits/10/lib/10.0.22621.0/um/{msvc_target}'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/lib/{msvc_target}'),
+            util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/atlmfc/lib/{msvc_target}'),
         ]
         environment['LIB'] = ';'.join(linker_library)
 
@@ -145,7 +145,7 @@ class VisualCPPBuildTask(BuildTask):
     def build(self):
         super().build()
         
-        cl = os.path.join(util.bcs_ewdk_dir, f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/bin/{self.msvc_host}/{self.msvc_target}', "cl.exe")
+        cl = util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/bin/{self.msvc_host}/{self.msvc_target}', "cl.exe")
         if not os.path.exists(cl):
             raise Exception(f"EWDK invalid. Can't find {cl}")
 

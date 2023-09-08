@@ -1,15 +1,8 @@
 extra_include_dirs = [ 
   ".",
-  "//",
-  "//framework",
-  "//thirdparty",
-  "//tags",
-  "//debugfiletools",
-  "//contentframework",
-  "//runtime",
-  "//tooling" ]
+  "//" ]
 
-template("bcs_library")
+template("bob_library")
 {
   if(!defined(invoker.include_dirs)) {
     invoker.include_dirs = extra_include_dirs
@@ -23,14 +16,14 @@ template("bcs_library")
     invoker.defines += tag_configuration_defines
   }
   
-  target(bcs_library_type, target_name)
+  target(bob_library_type, target_name)
   {
     metadata = {}
     forward_variables_from(invoker, "*")
   }
 }
 
-template("bcs_static_library")
+template("bob_static_library")
 {
   if(!defined(invoker.include_dirs)) {
     invoker.include_dirs = extra_include_dirs
@@ -51,7 +44,7 @@ template("bcs_static_library")
   }
 }
 
-template("bcs_shared_library")
+template("bob_shared_library")
 {
   if(!defined(invoker.include_dirs)) {
     invoker.include_dirs = extra_include_dirs
@@ -72,7 +65,7 @@ template("bcs_shared_library")
   }
 }
 
-template("bcs_executable")
+template("bob_executable")
 {
   if(!defined(invoker.include_dirs)) {
     invoker.include_dirs = extra_include_dirs
@@ -93,7 +86,7 @@ template("bcs_executable")
   }
 }
 
-template("bcs_source_set")
+template("bob_source_set")
 {
   if(!defined(invoker.include_dirs)) {
     invoker.include_dirs = extra_include_dirs
@@ -108,7 +101,7 @@ template("bcs_source_set")
   }
 }
 
-template("bcs_python")
+template("bob_python")
 {
   if(!defined(invoker.include_dirs)) {
     invoker.include_dirs = extra_include_dirs
@@ -124,7 +117,7 @@ template("bcs_python")
   }
 }
 
-template("bcs_resources") {
+template("bob_resources") {
   action(target_name) {
     forward_variables_from(invoker, [ "data_deps", "deps", "public_deps", "visibility", "metadata", "sources", "inputs", "outputs", "args" ])
     if (!defined(inputs)) { inputs = [] }
@@ -138,11 +131,11 @@ template("bcs_resources") {
     
     # BCS Environment
     args += [
-      "--bcs_root_dir", rebase_path(bcs_root_dir),
-      "--bcs_third_party_dir", rebase_path(bcs_third_party_dir),
-      "--bcs_7z_dir", rebase_path(bcs_7z_dir),
-      "--bcs_ewdk_dir", rebase_path(bcs_ewdk_dir),
-      "--bcs_download_cache_dir", rebase_path(bcs_download_cache_dir),
+      "--bob_root_dir", rebase_path(bob_root_dir),
+      "--bob_third_party_dir", rebase_path(bob_third_party_dir),
+      "--bob_7z_dir", rebase_path(bob_7z_dir),
+      "--bob_ewdk_dir", rebase_path(bob_ewdk_dir),
+      "--bob_download_cache_dir", rebase_path(bob_download_cache_dir),
       "--target_os", target_os,
       "--target_config", target_config,
       "--target_link_config", target_link_config,
@@ -162,7 +155,7 @@ template("bcs_resources") {
   }
 }
 
-template("bcs_hlsl") {
+template("bob_hlsl") {
   action(target_name) {
     forward_variables_from(invoker, [ "data_deps", "deps", "public_deps", "visibility", "metadata", "sources", "inputs", "outputs", "args" ])
     if (!defined(inputs)) { inputs = [] }
@@ -176,11 +169,11 @@ template("bcs_hlsl") {
     
     # BCS Environment
     args += [
-      "--bcs_root_dir", rebase_path(bcs_root_dir),
-      "--bcs_third_party_dir", rebase_path(bcs_third_party_dir),
-      "--bcs_7z_dir", rebase_path(bcs_7z_dir),
-      "--bcs_ewdk_dir", rebase_path(bcs_ewdk_dir),
-      "--bcs_download_cache_dir", rebase_path(bcs_download_cache_dir),
+      "--bob_root_dir", rebase_path(bob_root_dir),
+      "--bob_third_party_dir", rebase_path(bob_third_party_dir),
+      "--bob_7z_dir", rebase_path(bob_7z_dir),
+      "--bob_ewdk_dir", rebase_path(bob_ewdk_dir),
+      "--bob_download_cache_dir", rebase_path(bob_download_cache_dir),
       "--target_os", target_os,
       "--target_config", target_config,
       "--target_link_config", target_link_config,

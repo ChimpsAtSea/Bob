@@ -2,11 +2,11 @@
 declare_args() {
   target_config = "debug"
   target_link_config = "dynamic"
-  bcs_root_dir = "//"
-  bcs_third_party_dir = "//thirdparty"
-  bcs_7z_dir = "//thirdparty/7-Zip"
-  bcs_ewdk_dir = "//thirdparty/EWDK"
-  bcs_download_cache_dir = "//downloadcache"
+  bob_root_dir = "//bob/"
+  bob_project_root_dir = "//"
+  bob_third_party_dir = "//bob/thirdparty"
+  bob_download_cache_dir = "//bob/downloadcache"
+  bob_ewdk_dir = "//bob/thirdparty/EWDK"
   tag_configuration_triplets_concat = ""
 }
 
@@ -17,7 +17,7 @@ foreach(tag_configuration_triplet, string_split(tag_configuration_triplets_conca
   triplet_object = {}
 
   triplet = string_split(tag_configuration_triplet, "-")
-  define = "BCS_BUILD_HIGH_LEVEL_" + string_transform(triplet[0], "upper")
+  define = "BOB_BUILD_HIGH_LEVEL_" + string_transform(triplet[0], "upper")
   triplet_object = { 
     engine = triplet[0]
     platform = triplet[1]
@@ -59,39 +59,39 @@ is_target_arm_any = is_target_arm || is_target_arm64
 is_host_windows = host_os == "win"
 is_host_linux = host_os == "linux"
 
-bcs_library_type = "static_library"
-bcs_is_shared = false
-bcs_is_static = true
-bcs_is_profile = true
+bob_library_type = "static_library"
+bob_is_shared = false
+bob_is_static = true
+bob_is_profile = true
 if(is_target_windows)
 {
   if (target_link_config == "static")
   {
-    bcs_library_type = "static_library"
-    bcs_is_shared = false
-    bcs_is_static = true
-    bcs_is_profile = false
+    bob_library_type = "static_library"
+    bob_is_shared = false
+    bob_is_static = true
+    bob_is_profile = false
   }
   else if (target_link_config == "shared")
   {
-    bcs_library_type = "shared_library"
-    bcs_is_shared = true
-    bcs_is_static = false
-    bcs_is_profile = false
+    bob_library_type = "shared_library"
+    bob_is_shared = true
+    bob_is_static = false
+    bob_is_profile = false
   }
   else if (target_link_config == "staticprofile")
   {
-    bcs_library_type = "static_library"
-    bcs_is_shared = false
-    bcs_is_static = true
-    bcs_is_profile = true
+    bob_library_type = "static_library"
+    bob_is_shared = false
+    bob_is_static = true
+    bob_is_profile = true
   }
   else if (target_link_config == "sharedprofile")
   {
-    bcs_library_type = "shared_library"
-    bcs_is_shared = true
-    bcs_is_static = false
-    bcs_is_profile = true
+    bob_library_type = "shared_library"
+    bob_is_shared = true
+    bob_is_static = false
+    bob_is_profile = true
   }
   else
   {
@@ -100,31 +100,31 @@ if(is_target_windows)
 }
 
 # All binary targets will get this list of configs by default.
-_shared_binary_target_configs = [ "//toolchain:compiler_defaults" ]
+_shared_binary_target_configs = [ get_path_info(":compiler_defaults", "abspath") ]
 
 # Apply that default list to the binary target types.
 set_defaults("executable") {
   configs = _shared_binary_target_configs
-  configs += [ "//toolchain:binary_library_ldconfig" ]
+  configs += [ get_path_info(":binary_library_ldconfig", "abspath") ]
 
   # Executables get this additional configuration.
-  configs += [ "//toolchain:executable_ldconfig" ]
+  configs += [ get_path_info(":executable_ldconfig", "abspath") ]
 }
 set_defaults("static_library") {
   configs = _shared_binary_target_configs
 
   # Static libraries get this additional configuration.
-  configs += [ "//toolchain:static_library_ldconfig" ]
+  configs += [ get_path_info(":static_library_ldconfig", "abspath") ]
 }
 set_defaults("shared_library") {
   configs = _shared_binary_target_configs
-  configs += [ "//toolchain:binary_library_ldconfig" ]
+  configs += [ get_path_info(":binary_library_ldconfig", "abspath") ]
 
   # Shared libraries get this additional configuration.
-  configs += [ "//toolchain:shared_library_ldconfig" ]
+  configs += [ get_path_info(":shared_library_ldconfig", "abspath") ]
 }
 set_defaults("source_set") {
   configs = _shared_binary_target_configs
 }
 
-set_default_toolchain("//toolchain:clang")
+set_default_toolchain(get_path_info(":clang", "abspath"))

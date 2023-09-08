@@ -18,12 +18,17 @@ import library_engine_platform_build as epb
 # Setup the GN Build Base Environment
 # -----
 
+#TODO: Remove hard coded paths in here
+
+#TODO: This is a nasty hack, need a better way to format paths to match the GN specification
+buildconfig_relpath = '//' + os.path.relpath(os.path.join(util.get_root_dir(), 'toolchain/BUILDCONFIG.gn'), util.get_project_root_dir()).replace('\\', '/')
+
 def gn_setup_build_environment():
     with open('.gn', 'w') as f:
         lines = []
 
         lines += ['# The location of the build configuration file.']
-        lines += ['buildconfig = "//toolchain/BUILDCONFIG.gn"']
+        lines += [f'buildconfig = "{buildconfig_relpath}"']
         lines += [f'script_executable = "{os.getcwd()}/thirdparty/python-3.11.1/python.exe"']
         lines += ['ninja_required_version="1.12.0"']
         lines += ['export_compile_commands=["*"]']
@@ -123,7 +128,7 @@ if util.build_webassembly:
 gn_configurations = [ 'debug', 'test', 'release' ]
 gn_link_configurations = [ 'static', 'shared' ]
 gn_profile_configurations = [ False ]
-if util.build_profile:
+if util.get_enable_profile():
     gn_profile_configurations += [ True ]
 
 def get_num_configurations():
@@ -138,16 +143,24 @@ def get_num_configurations():
 
 @timer_func
 def gn_generate_project_configurations():
-    async def gn_generate_project_configurations_async():
-        futures = []
+    if util.debug:
         for target_os in gn_operating_systems:
             for target_config in gn_configurations:
                 for target_link_config in gn_link_configurations:
                     for target_profile_config in gn_profile_configurations:
                         for target_cpu in get_target_os_cpus(target_os):
-                            futures.append(gn.generate_build_configuration_files_async(target_os, target_config, target_link_config, target_cpu, epb.tag_configuration_triplets_concat, False))
-        await asyncio.gather(*futures)
-    return execute_async_task(gn_generate_project_configurations_async)
+                            gn.generate_build_configuration_files(target_os, target_config, target_link_config, target_cpu, epb.tag_configuration_triplets_concat, False)
+    else:
+        async def gn_generate_project_configurations_async():
+            futures = []
+            for target_os in gn_operating_systems:
+                for target_config in gn_configurations:
+                    for target_link_config in gn_link_configurations:
+                        for target_profile_config in gn_profile_configurations:
+                            for target_cpu in get_target_os_cpus(target_os):
+                                futures.append(gn.generate_build_configuration_files_async(target_os, target_config, target_link_config, target_cpu, epb.tag_configuration_triplets_concat, False))
+            await asyncio.gather(*futures)
+        return execute_async_task(gn_generate_project_configurations_async)
 
 def parse_global_targets_list(gn_solution_dir : str):
     global_targets = list[sln.TargetSettings]()
@@ -248,7 +261,7 @@ def setup_solution_project_structure(solution : sln.Solution, global_targets : l
         enqueue_folders(project, solution)
 
 def sln_setup_cpp_default_properties_file():
-    src_microsoft_cpp_default_properties_path = os.path.join(util.bcs_ewdk_dir, 'Program Files/Microsoft Visual Studio/2022/BuildTools/MSBuild/Microsoft/VC/v170/Microsoft.Cpp.Default.props')
+    src_microsoft_cpp_default_properties_path = util.get_ewdk_dir('Program Files/Microsoft Visual Studio/2022/BuildTools/MSBuild/Microsoft/VC/v170/Microsoft.Cpp.Default.props')
     dst_microsoft_cpp_default_properties_path = os.path.join('solution', 'Cpp.Default.props')
     with open(src_microsoft_cpp_default_properties_path) as src_prop_file:
         prop_lines = iter(src_prop_file)

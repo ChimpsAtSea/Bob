@@ -4,192 +4,228 @@ import time
 import asyncio
 import platform
 import fnmatch
-from typing import Union
+import argparse
+import inspect
+from typing import Union, Callable, Iterable, Any, TypeVar, TypeAlias, NewType
 
-command_line = {
-    #Environment Round Trip
-    #TODO: Investigate nuking as many of these as possible
-    'bcs_root_dir': str(),
-    'bcs_third_party_dir': str(),
-    'bcs_toolchain_dir': str(),
-    'bcs_llvm_dir': str(),
-    'bcs_llvm_bin_dir': str(),
-    'bcs_llvm_src_dir': str(),
-    'bcs_gn_dir': str(),
-    'bcs_ninja_dir': str(),
-    'bcs_python_dir': str(),
-    'bcs_cmake_dir': str(),
-    'bcs_ewdk_dir': str(),
-    'bcs_7z_dir': str(),
-    'bcs_yasm_dir': str(),
-    'bcs_download_cache_dir': str(),
-    'bcs_winpix3_dir': str(),
+def argparse_is_directory(argument, directory):
+    directory = os.path.abspath(directory)
+    if not os.path.exists(directory):
+        raise Exception(f'Directory for argument {argument} does not exist', directory)
+    return directory
 
-    'build-gn': bool(),
+class BobArgumentParser(argparse.ArgumentParser):
+    _T = TypeVar("_T")
+    _ActionStr: TypeAlias = str
+    _NArgsStr: TypeAlias = str
+    _SUPPRESS_T = NewType("_SUPPRESS_T", str)
 
-    #BCS Platform Targets
-    'windows': platform.system() == 'Windows',
-    'linux': platform.system() == 'Linux',
-    'webassembly': bool(),
-    'all': bool(),
-    'profile': bool(),
+    def add_dir_argument(
+        self,
+        name: str,
+        required: bool = False
+    ) -> argparse.Action:
+        return argparse.ArgumentParser.add_argument(self, name, type=lambda d : argparse_is_directory(name, d), required = required)
 
-    #GN Round Trip Variables
-    'target_os': str(),
-    'target_config': str(),
-    'target_link_config': str(),
-    'target_cpu': str(),
+parser = BobArgumentParser()
 
-    #GN Variables
-    'target_gen_dir': str(),
-    'target_out_dir': str(),
-    'root_gen_dir': str(),
-    'root_build_dir': str(),
-    'root_out_dir': str(),
-    'target_src_dir': str(),
+parser.add_dir_argument('--bob-root-directory', required=True)
+parser.add_dir_argument('--bob-download-cache-directory', required=True)
+parser.add_dir_argument('--bob-thirdparty-directory', required=True)
+parser.add_dir_argument('--bob-project-root-directory', required=True)
+parser.add_argument('--bob-solution-pretty-name')
+parser.add_argument('--bob-solution-namespace')
 
-    #DXC Variables
-    'dxc_passthrough': str(),
+parser.add_argument('--bob-build-target', type=str, choices=['all', 'windows', 'linux', 'webassembly'])
+parser.add_argument('--bob-enable-profile', type=str)
 
-    #Engine Platform Build
-    'engine': str(),
-    'platform': str(),
-    'build': str(),
+parser.add_argument('--gn-target-os', type=str)
+parser.add_argument('--gn-target-config', type=str)
+parser.add_argument('--gn-target-link-config', type=str)
+parser.add_argument('--gn-target-cpu', type=str)
 
-    #Commandlet Variables
-    'default': list[str](),
-    'inputs': list[str](),
-    'outputs': list[str](),
-    'output': str(),
-    'target': str(),
-    'sources': list[str](),
-    'output-subdirectory': str()
-}
+parser.add_dir_argument('--gn-root-build-dir')
+parser.add_dir_argument('--gn-root-gen-dir')
+parser.add_dir_argument('--gn-root-out-dir')
+parser.add_dir_argument('--gn-target-gen-dir')
+parser.add_dir_argument('--gn-target-out-dir')
+parser.add_dir_argument('--gn-target-src-dir')
 
-arguments = sys.argv[1:]
-key = None
-for i, arg in enumerate(arguments):
-    if arg.startswith('--'):
-        key = arg[2:]
-        if key in command_line:
-            assignment_types = [ list, str ]
-            if type(command_line[key]) == bool:
-                command_line[key] = True
-            elif type(command_line[key]) in assignment_types:
-                pass
-            else:
-                raise Exception(f'Unhandled key type', type(command_line[key]))
-        else:
-            raise Exception(f'Unknown command line option {arg}')
-    elif key is not None:
-        if type(command_line[key]) == list:
-            command_line[key].append(arg)
-        elif type(command_line[key]) == str:
-            command_line[key] = arg
-            key = None
-        else:
-            raise Exception(f'Unknown command line option {key} = {arg}', type(command_line[key]))
-    elif 'default' in command_line:
-        command_line['default'].append(arg)
+#TODO: Find a new home for arguments below
 
-def get_environment(variable : str):
-    if variable in os.environ:
-        return os.environ[variable]
-    if variable in command_line:
-        return command_line[variable]
-    return ''
+parser.add_argument('--tool-engine', type=str)
+parser.add_argument('--tool-platform', type=str)
+parser.add_argument('--tool-build', type=str)
+parser.add_argument('--tool-dxc-passthrough', type=str)
 
-bcs_root_dir = get_environment('bcs_root_dir')
-bcs_third_party_dir = get_environment('bcs_third_party_dir')
-bcs_toolchain_dir = get_environment('bcs_toolchain_dir')
-bcs_llvm_dir = get_environment('bcs_llvm_dir')
-bcs_llvm_bin_dir = get_environment('bcs_llvm_bin_dir')
-bcs_llvm_src_dir = get_environment('bcs_llvm_src_dir')
-bcs_gn_dir = get_environment('bcs_gn_dir')
-bcs_ninja_dir = get_environment('bcs_ninja_dir')
-bcs_python_dir = get_environment('bcs_python_dir')
-bcs_ewdk_dir = get_environment('bcs_ewdk_dir')
-bcs_msys2_dir = get_environment('bcs_msys2_dir')
-bcs_cmake_dir = get_environment('bcs_cmake_dir')
-bcs_7z_dir = get_environment('bcs_7z_dir')
-bcs_yasm_dir = get_environment('bcs_yasm_dir')
-bcs_download_cache_dir = get_environment('bcs_download_cache_dir')
-bcs_winpix3_dir = get_environment('bcs_winpix3_dir')
+parser.add_argument('--tool-inputs', type=str)
+parser.add_argument('--tool-outputs', type=str)
+parser.add_argument('--tool-sources', type=str)
+parser.add_argument('--tool-output-subdirectory', type=str)
 
-target_os = get_environment('target_os')
-target_config = get_environment('target_config')
-target_link_config = get_environment('target_link_config')
-target_cpu = get_environment('target_cpu')
+parser.add_argument('--debug', type=str)
 
-target_src_dir = get_environment('target_src_dir')
-target_gen_dir = get_environment('target_gen_dir')
-target_out_dir = get_environment('target_out_dir')
-root_out_dir = get_environment('root_out_dir')
-root_gen_dir = get_environment('root_gen_dir')
-root_build_dir = get_environment('root_build_dir')
+args, unknown = parser.parse_known_args()
 
-bcs_is_host_windows = platform.system() == 'Windows'
-bcs_is_host_linux = platform.system() == 'Linux'
+def get_argument(argument_name : str, default = None):
+    argument = getattr(args, argument_name)
+    if (default is None) and (argument is None):
+        raise Exception(f'{argument_name} was not found')
+    return argument or default
 
-build_all = command_line['all']
-build_windows = build_all or command_line['windows']
-build_linux = build_all or command_line['linux']
-build_webassembly = build_all or command_line['webassembly']
-build_profile = command_line['profile']
+def parse_argument_bool(argument : str):
+    if not argument:
+        return False
+    return any(argument.lower() == s for s in ['true', 'yes', '1'])
 
-inputs = command_line['inputs']
-sources = command_line['sources']
-outputs = command_line['outputs']
-output_subdirectory = command_line['output-subdirectory']
+debug = parse_argument_bool(get_argument('debug', 'false'))
 
-bcs_executable_suffix = ''
-if bcs_is_host_windows:
-    bcs_executable_suffix = '.exe'
-elif platform.system() == 'Linux':
-    bcs_executable_suffix = ''
-else:
-    print('Unknown operating system')
+if unknown:
+    print("Unknown arguments", unknown)
+
+
+build_target = args.bob_build_target
+build_all = bool((build_target == 'all'))
+build_windows = bool(build_all or (build_target == 'windows'))
+build_linux = bool(build_all or (build_target == 'linux'))
+build_webassembly = bool(build_all or (build_target == 'webassembly'))
+
+is_host_windows = platform.system() == 'Windows'
+is_host_linux = platform.system() == 'Linux'
+host_executable_suffix = '.exe' if is_host_windows else ''
+
+if not any([build_all, build_windows, build_linux, build_webassembly]):
+    if is_host_windows:
+        build_windows = True
+        build_target = 'windows'
+    elif is_host_linux:
+        build_linux = True
+        build_target = 'linux'
+
+def get_directory_argument(argument_name : str, subdirectory : str):
+    base_directory = get_argument(argument_name)
+    if not os.path.exists(base_directory):
+        raise Exception(f'Base directory for argument {argument_name} does not exist', argument_name, base_directory)
+    if not subdirectory:
+        return base_directory
+    directory = os.path.join(base_directory, subdirectory)
+    if not os.path.exists(directory):
+        raise Exception(f'Subdirectory for argument {argument_name} does not exist', argument_name, base_directory, subdirectory, directory)
+    return directory
+
+def get_root_dir(subdirectory : str = None) -> str:
+    return get_directory_argument('bob_root_directory', subdirectory)
+def get_thirdparty_dir(subdirectory : str = None) -> str:
+    return get_directory_argument('bob_thirdparty_directory', subdirectory)
+def get_download_cache_dir(subdirectory : str = None) -> str:
+    return get_directory_argument('bob_download_cache_directory', subdirectory)
+def get_project_root_dir(subdirectory : str = None) -> str:
+    return get_directory_argument('bob_project_root_directory', subdirectory)
+def get_solution_pretty_name() -> str:
+    return get_argument('bob_solution_pretty_name')
+def get_solution_namespace() -> str:
+    return get_argument('bob_solution_namespace')
+def get_build_target() -> tuple[str, None]:
+    return get_argument('bob_build_target', build_target)
+def get_enable_profile() -> bool:
+    return parse_argument_bool(get_argument('bob_enable_profile', 'false'))
+def get_gn_target_os() -> str:
+    return get_argument('gn_target_os')
+def get_gn_target_config() -> str:
+    return get_argument('gn_target_config')
+def get_gn_target_link_config() -> str:
+    return get_argument('gn_target_link_config')
+def get_gn_target_cpu() -> str:
+    return get_argument('gn_target_cpu')
+def get_gn_root_build_dir(subdirectory : str = None):
+    return get_directory_argument('gn_root_build_dir', subdirectory)
+def get_gn_root_gen_dir(subdirectory : str = None):
+    return get_directory_argument('gn_root_gen_dir', subdirectory)
+def get_gn_root_out_dir(subdirectory : str = None):
+    return get_directory_argument('gn_root_out_dir', subdirectory)
+def get_gn_target_gen_dir(subdirectory : str = None):
+    return get_directory_argument('gn_target_gen_dir', subdirectory)
+def get_gn_target_out_dir(subdirectory : str = None):
+    return get_directory_argument('gn_target_out_dir', subdirectory)
+def get_gn_target_src_dir(subdirectory : str = None):
+    return get_directory_argument('gn_target_src_dir', subdirectory)
+def get_tool_engine():
+    return get_argument('tool_engine')
+def get_tool_platform():
+    return get_argument('tool_platform')
+def get_tool_build():
+    return get_argument('tool_build')
+def get_tool_dxc_passthrough():
+    return get_argument('tool_dxc_passthrough')
+def get_tool_inputs():
+    return get_argument('tool_inputs')
+def get_tool_outputs():
+    return get_argument('tool_outputs')
+def get_tool_sources():
+    return get_argument('tool_sources')
+def get_tool_output_subdirectory():
+    return get_argument('tool_output_subdirectory')
+
+#TODO: Move this out to a better home?
+
+def _get_thirdparty_subdir(name, subdirectory, subpath):
+    if not subdirectory:
+        raise Exception(f'Requested thirdparty directory is invalid', name, subdirectory)
+    directory = os.path.join(get_thirdparty_dir(), subdirectory)
+    directory = os.path.abspath(directory)
+    if not os.path.exists(directory):
+        raise Exception(f'Requested thirdparty directory doesn\'t exist', name, subdirectory, directory)
+    if subpath is not None:
+        directory = os.path.join(directory, subpath)
+        if not os.path.exists(directory):
+            raise Exception(f'Requested thirdparty subdirectory doesn\'t exist', name, subdirectory, subpath, directory)
+    return directory
+
+#TODO: Programatically get these rather than hard code them
+
+def get_llvm_dir(subpath : str = None):
+    return _get_thirdparty_subdir('llvm', 'llvm', subpath)
+def get_llvm_bin_dir(subpath : str = None):
+    return _get_thirdparty_subdir('llvm', 'llvm/bin', subpath)
+def get_llvm_src_dir(subpath : str = None):
+    return _get_thirdparty_subdir('llvm', 'llvm/llvm-15.0.6.src', subpath)
+def get_gn_dir(subpath : str = None):
+    return _get_thirdparty_subdir('gn', 'gn/gn_build', subpath)
+def get_ninja_dir(subpath : str = None):
+    return _get_thirdparty_subdir('ninja', 'ninja/ninja_build', subpath)
+def get_python_dir(subpath : str = None):
+    return _get_thirdparty_subdir('python', 'python-3.11.1', subpath)
+def get_ewdk_dir(subpath : str = None):
+    return _get_thirdparty_subdir('ewdk', 'EWDK/EWDK_ni_release_svc_prod1_22621_220804-1759', subpath)
+def get_msys2_dir(subpath : str = None):
+    return _get_thirdparty_subdir('msys2', None, subpath)
+def get_cmake_dir(subpath : str = None):
+    return _get_thirdparty_subdir('cmake', None, subpath)
+def get_7z_dir(subpath : str = None):
+    return _get_thirdparty_subdir('7z', '7-Zip/7z2201-x64', subpath)
+def get_yasm_dir(subpath : str = None):
+    return _get_thirdparty_subdir('yasm', None, subpath)
+def get_winpix3_dir(subpath : str = None):
+    return _get_thirdparty_subdir('winpix3', None, subpath)
+
+def _get_thirdparty_executable_exists(directory, filename):
+    filepath = os.path.join(directory, filename)
+    filepath = os.path.abspath(filepath)
+    if not os.path.exists(filepath):
+        raise Exception(f'Requested thirdparty filepath doesn\'t exist', filepath, directory, filename)
+    return filepath
 
 def get_gn():
-    if not bcs_gn_dir:
-        raise Exception('bcs_gn_dir not set')
-    return os.path.join(bcs_gn_dir, f'gn{bcs_executable_suffix}')
-
+    return _get_thirdparty_executable_exists(get_gn_dir(), f'gn{host_executable_suffix}')
 def get_ninja():
-    if not bcs_ninja_dir:
-        raise Exception('bcs_ninja_dir not set')
-    return os.path.join(bcs_ninja_dir, f'ninja{bcs_executable_suffix}')
-
+    return _get_thirdparty_executable_exists(get_ninja_dir(), f'ninja{host_executable_suffix}')
 def get_python():
-    if not bcs_python_dir:
-        raise Exception('bcs_python_dir not set')
-    return os.path.join(bcs_python_dir, f'python{bcs_executable_suffix}')
-
+    return _get_thirdparty_executable_exists(get_python_dir(), f'python{host_executable_suffix}')
 def get_cmake():
-    if not bcs_cmake_dir:
-        raise Exception('bcs_cmake_dir not set')
-    return os.path.join(bcs_cmake_dir, f'cmake{bcs_executable_suffix}')
-
+    return _get_thirdparty_executable_exists(get_cmake_dir(), f'cmake{host_executable_suffix}')
 def get_7z():
-    if not bcs_7z_dir:
-        raise Exception('bcs_7z_dir not set')
-    return os.path.join(bcs_7z_dir, f'7z{bcs_executable_suffix}')
+    return _get_thirdparty_executable_exists(get_7z_dir(), f'7z{host_executable_suffix}')
 
-
-#print('target_gen_dir', target_gen_dir)
-#print('target_out_dir', target_out_dir)
-#print('root_gen_dir', root_gen_dir)
-#print('root_build_dir', root_build_dir)
-
-#print('bcs_root_dir', bcs_root_dir)
-#print('bcs_third_party_dir', bcs_third_party_dir)
-#print('bcs_gn_dir', bcs_gn_dir)
-#print('bcs_ninja_dir', bcs_ninja_dir)
-#print('bcs_python_dir', bcs_python_dir)
-#print('bcs_ewdk_dir', bcs_ewdk_dir)
-#print('bcs_msys2_dir', bcs_msys2_dir)
-#print('bcs_cmake_dir', bcs_cmake_dir)
-#print('bcs_7z_dir', bcs_7z_dir)
 
 def pretty_print_dict(
         input_dictionary,
@@ -292,4 +328,4 @@ def filesystem_rebase(paths : Union[str, list[str]], base : str):
         return rel_paths
 
 def filesystem_rebase_root(paths : Union[str, list[str]]):
-    return filesystem_rebase(paths, bcs_root_dir)
+    return filesystem_rebase(paths, get_project_root_dir())

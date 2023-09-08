@@ -200,7 +200,7 @@ def system_path(project_root : str, path : str):
         return path
 
 def patch_build_configuration_files(target_os: str, target_config: str, target_link_config: str, target_cpu: str):
-    target_directory = os.path.join(util.bcs_root_dir, f'solution/{target_os}-{target_config}-{target_cpu}-{target_link_config}')
+    target_directory = os.path.join(util.get_project_root_dir(), f'solution/{target_os}-{target_config}-{target_cpu}-{target_link_config}')
     build_ninja_filepath = os.path.join(target_directory, "build.ninja")
     build_ninja_d_filepath = os.path.join(target_directory, "build.ninja.d")
     build_ninja_stamp_filepath = os.path.join(target_directory, "build.ninja.stamp")
@@ -219,12 +219,12 @@ def patch_build_configuration_files(target_os: str, target_config: str, target_l
             extra_watch_files = [ 
                 "setup.bat" ]
             
-            toolchain_python_files = util.filesystem_get_files_recursive(os.path.join(util.bcs_root_dir, 'toolchain'), ["*.py"])
+            toolchain_python_files = util.filesystem_get_files_recursive(os.path.join(util.get_project_root_dir(), 'toolchain'), ["*.py"])
             toolchain_python_files = util.filesystem_rebase_root(toolchain_python_files)
             extra_watch_files.extend(toolchain_python_files)
 
             for extra_watch_file in extra_watch_files:
-                extra_watch_file_relpath = os.path.relpath(os.path.join(util.bcs_root_dir, extra_watch_file), target_directory)
+                extra_watch_file_relpath = os.path.relpath(os.path.join(util.get_project_root_dir(), extra_watch_file), target_directory)
                 extra_watch_file_relpath = extra_watch_file_relpath.replace('\\', '/')
                 regenerate_command += f' {extra_watch_file_relpath}'
     
@@ -258,31 +258,32 @@ def patch_build_configuration_files(target_os: str, target_config: str, target_l
                     raise Exception(f"Unexpected command name {command_name.strip()} expected 'command'")
                 #build_ninja_lines[index + 1] = f'{command_name} = {command}'
 
-                bcs_root_dir_arg = util.bcs_root_dir.rstrip("\\/")
-                bcs_third_party_dir_arg = util.bcs_third_party_dir.rstrip("\\/")
-                bcs_download_cache_dir_arg = util.bcs_python_dir.rstrip("\\/")
-                bcs_7z_dir_arg = util.bcs_7z_dir.rstrip("\\/")
-                bcs_bcs_ewdk_dir_arg = util.bcs_ewdk_dir.rstrip("\\/")
-                bcs_gn_dir_arg = util.bcs_gn_dir.rstrip("\\/")
-                bcs_ninja_dir_arg = util.bcs_ninja_dir.rstrip("\\/")
-                bcs_python_dir_arg = util.bcs_python_dir.rstrip("\\/")
+                bob_root_directory = util.get_root_dir().rstrip("\\/")
+                bob_download_cache_directory = util.get_download_cache_dir().rstrip("\\/")
+                bob_thirdparty_directory = util.get_thirdparty_dir().rstrip("\\/")
+                bob_project_root_directory = util.get_project_root_dir().rstrip("\\/")
+                bob_solution_pretty_name = util.get_solution_pretty_name()
+                bob_solution_namespace = util.get_solution_namespace()
+                bob_build_target = util.get_build_target()
+                bob_enable_profile = util.get_enable_profile()
 
-                configuration_args = [
-                   f'--target_os "{target_os}"',
-                   f'--target_config "{target_config}"',
-                   f'--target_link_config "{target_link_config}"',
-                   f'--target_cpu "{target_cpu}"' ]
-                environment_args = [
-                   f'--bcs_root_dir "{bcs_root_dir_arg}"',
-                   f'--bcs_third_party_dir "{bcs_third_party_dir_arg}"',
-                   f'--bcs_download_cache_dir "{bcs_download_cache_dir_arg}"',
-                   f'--bcs_7z_dir "{bcs_7z_dir_arg}"',
-                   f'--bcs_ewdk_dir "{bcs_bcs_ewdk_dir_arg}"',
-                   f'--bcs_gn_dir "{bcs_gn_dir_arg}"',
-                   f'--bcs_ninja_dir "{bcs_ninja_dir_arg}"',
-                   f'--bcs_python_dir "{bcs_python_dir_arg}"' ]
+                args = [
+                f'--gn-target-os "{target_os}"',
+                f'--gn-target-config "{target_config}"',
+                f'--gn-target-link-config "{target_link_config}"',
+                f'--gn-target-cpu "{target_cpu}"',
+                f'--bob-root-directory "{bob_root_directory}"',
+                f'--bob-download-cache-directory "{bob_download_cache_directory}"',
+                f'--bob-thirdparty-directory "{bob_thirdparty_directory}"',
+                f'--bob-project-root-directory "{bob_project_root_directory}"',
+                f'--bob-solution-pretty-name "{bob_solution_pretty_name}"',
+                f'--bob-solution-namespace "{bob_solution_namespace}"' ]
+                if bob_build_target:
+                    args += [ f'--bob-build-target "{bob_build_target}"' ]
+                if bob_enable_profile:
+                    args += [ f'--bob-enable-profile "{bob_enable_profile}"' ]
 
-                build_ninja_lines[index + 1] = f'#{build_ninja_lines[index + 1]}\n{command_name} = "{util.get_python()}" "{os.path.join(util.bcs_root_dir, "toolchain/python/setup_regenerate_solution.py")}" {" ".join(configuration_args + environment_args)}'
+                build_ninja_lines[index + 1] = f'#{build_ninja_lines[index + 1]}\n{command_name} = "{util.get_python()}" "{util.get_root_dir("toolchain/python/setup_regenerate_solution.py")}" {" ".join(args)}'
 
     if util.write_file_if_changed(build_ninja_filepath, build_ninja_lines + [""]):
         #print(build_ninja_filepath, "changed")
@@ -292,31 +293,24 @@ def patch_build_configuration_files(target_os: str, target_config: str, target_l
     #pathlib.Path(build_ninja_d_filepath).touch()
     pathlib.Path(build_ninja_stamp_filepath).touch()
 
-#@timer_func
-def generate_build_configuration_files(target_os: str, target_config: str, target_link_config: str, target_cpu: str, tag_configuration_triplets_concat : str, regenerate : bool):
-    if not util.bcs_third_party_dir:
-        raise Exception("bcs_third_party_dir missing")
-    if not util.bcs_7z_dir:
-        raise Exception("bcs_7z_dir missing")
-    if not util.bcs_ewdk_dir:
-        raise Exception("bcs_ewdk_dir missing")
-    if not util.bcs_download_cache_dir:
-        raise Exception("bcs_download_cache_dir missing")
-    
+def _generate_build_configuration_files_command(target_os: str, target_config: str, target_link_config: str, target_cpu: str, tag_configuration_triplets_concat : str, regenerate : bool):
     gn_args = []
-    gn_args.append(f'bcs_third_party_dir="{util.bcs_third_party_dir}"')
-    gn_args.append(f'bcs_download_cache_dir="{util.bcs_download_cache_dir}"')
-    gn_args.append(f'bcs_7z_dir="{util.bcs_7z_dir}"')
-    gn_args.append(f'bcs_ewdk_dir="{util.bcs_ewdk_dir}"')
+    gn_args.append(f'bob_root_dir="{util.get_root_dir()}"')
+    gn_args.append(f'bob_project_root_dir="{util.get_project_root_dir()}"')
+    gn_args.append(f'bob_third_party_dir="{util.get_thirdparty_dir()}"')
+    gn_args.append(f'bob_download_cache_dir="{util.get_download_cache_dir()}"')
+    gn_args.append(f'bob_ewdk_dir="{util.get_ewdk_dir()}"')
+    #gn_args.append(f'bob_7z_dir="{util.get_7z_dir()}"')
     gn_args.append(f'target_os="{target_os}"')
     gn_args.append(f'target_config="{target_config}"')
     gn_args.append(f'target_link_config="{target_link_config}"')
     gn_args.append(f'target_cpu="{target_cpu}"')
     gn_args.append(f'tag_configuration_triplets_concat="{tag_configuration_triplets_concat}"')
-    gn_args_string = ' '.join(gn_args)
 
+    gn_args_string = ' '.join(gn_args)
     gn_args_formatted = gn_args_string.replace('"', '"""')
-    target_directory = os.path.join(util.bcs_root_dir, f'solution/{target_os}-{target_config}-{target_cpu}-{target_link_config}')
+
+    target_directory = os.path.join(util.get_project_root_dir(), f'solution/{target_os}-{target_config}-{target_cpu}-{target_link_config}')
 
     gn = util.get_gn()
     ninja = util.get_ninja()
@@ -329,7 +323,12 @@ def generate_build_configuration_files(target_os: str, target_config: str, targe
     args.append(f'"{target_directory}"')
     command = " ".join(args)
 
-    process = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+    return command
+
+def generate_build_configuration_files(target_os: str, target_config: str, target_link_config: str, target_cpu: str, tag_configuration_triplets_concat : str, regenerate : bool):
+    command = _generate_build_configuration_files_command(target_os, target_config, target_link_config, target_cpu, tag_configuration_triplets_concat, regenerate)
+
+    process = subprocess.run(command, cwd=util.get_project_root_dir(), shell=True, stdout=subprocess.PIPE)
     stdout = process.stdout
     if not process.returncode:
         pass
@@ -340,46 +339,14 @@ def generate_build_configuration_files(target_os: str, target_config: str, targe
     
     patch_build_configuration_files(target_os, target_config, target_link_config, target_cpu)
 
-#@timer_func
 async def generate_build_configuration_files_async(target_os: str, target_config: str, target_link_config: str, target_cpu: str, tag_configuration_triplets_concat : str, regenerate : bool):
-    if not util.bcs_third_party_dir:
-        raise Exception("bcs_third_party_dir missing")
-    if not util.bcs_7z_dir:
-        raise Exception("bcs_7z_dir missing")
-    if not util.bcs_ewdk_dir:
-        raise Exception("bcs_ewdk_dir missing")
-    
     command = None
     process = None
     try:
-        gn_args = []
-        gn_args.append(f'bcs_third_party_dir="{util.bcs_third_party_dir}"')
-        gn_args.append(f'bcs_download_cache_dir="{util.bcs_download_cache_dir}"')
-        gn_args.append(f'bcs_7z_dir="{util.bcs_7z_dir}"')
-        gn_args.append(f'bcs_ewdk_dir="{util.bcs_ewdk_dir}"')
-        gn_args.append(f'target_os="{target_os}"')
-        gn_args.append(f'target_config="{target_config}"')
-        gn_args.append(f'target_link_config="{target_link_config}"')
-        gn_args.append(f'target_cpu="{target_cpu}"')
-        gn_args.append(f'tag_configuration_triplets_concat="{tag_configuration_triplets_concat}"')
-        gn_args_string = ' '.join(gn_args)
+        command = _generate_build_configuration_files_command(target_os, target_config, target_link_config, target_cpu, tag_configuration_triplets_concat, regenerate)
 
-        gn_args_formatted = gn_args_string.replace('"', '"""')
-        target_directory = os.path.join(util.bcs_root_dir, f'solution/{target_os}-{target_config}-{target_cpu}-{target_link_config}')
-    
-        gn = util.get_gn()
-        ninja = util.get_ninja()
-        args = [gn]
-        if regenerate:
-            args.append(f'--regeneration')
-        args.append(f'--ninja-executable="{ninja}"')
-        args.append(f'--args="{gn_args_formatted}"')
-        args.append(f'gen')
-        args.append(f'"{target_directory}"')
-        command = " ".join(args)
-    
         # Run the subprocess asynchronously and wait for the result
-        process = await asyncio.create_subprocess_shell(command, stdout=asyncio.subprocess.PIPE)
+        process = await asyncio.create_subprocess_shell(command, cwd=util.get_project_root_dir(), stdout=asyncio.subprocess.PIPE)
         await process.wait()
         stdout = await process.stdout.read()
     
@@ -399,7 +366,6 @@ async def generate_build_configuration_files_async(target_os: str, target_config
         print(f'Command failed {inspect.currentframe().f_code.co_name}:', command)
         sys.stdout.buffer.write(stdout)
         raise Exception(stdout.decode('utf-8'))
-
 
 #@timer_func
 def get_target_list(target_directory: str, userdata = None) -> list[Target]:

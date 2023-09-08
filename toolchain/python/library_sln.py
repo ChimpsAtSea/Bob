@@ -348,15 +348,15 @@ def write_solution(output_directory: str, solution : Solution):
     #lines.append(f'\tEndGlobalSection')
     lines.append(f'EndGlobal')
 
-    solution_filepath = os.path.join(util.bcs_root_dir, solution.filepath)
+    solution_filepath = os.path.join(util.get_project_root_dir(), solution.filepath)
     os.makedirs(os.path.dirname(solution_filepath), exist_ok=True)
     if util.write_file_if_changed(solution_filepath, lines):
         print(solution_filepath, "changed")
 
 def write_python_project_file(lines : list[str], project : Project, file : str):
     project_filepath = project.get_project_filepath()
-    file_absolute_path = gn.system_path(util.bcs_root_dir, file)
-    solution_absolute_path = os.path.join(util.bcs_root_dir, project_filepath)
+    file_absolute_path = gn.system_path(util.get_project_root_dir(), file)
+    solution_absolute_path = os.path.join(util.get_project_root_dir(), project_filepath)
     solution_absolute_directory = os.path.dirname(solution_absolute_path)
     file_relative_path = os.path.relpath(file_absolute_path, solution_absolute_directory)
     file_relative_path_split = os.path.splitext(file_relative_path)
@@ -382,8 +382,8 @@ def write_python_project(solution : Solution, project : Project):
     lines.append('    <ProjectHome>.</ProjectHome>')
     for input in project.get_aggregate_inputs():
         if "main.py" in input:
-            input_absolute_path = gn.system_path(util.bcs_root_dir, input)
-            solution_absolute_path = os.path.join(util.bcs_root_dir, project_filepath)
+            input_absolute_path = gn.system_path(util.get_project_root_dir(), input)
+            solution_absolute_path = os.path.join(util.get_project_root_dir(), project_filepath)
             solution_absolute_directory = os.path.dirname(solution_absolute_path)
             input_relative_path = os.path.relpath(input_absolute_path, solution_absolute_directory)
             lines.append(f'    <StartupFile>{html.escape(input_relative_path)}</StartupFile>')
@@ -411,15 +411,15 @@ def write_python_project(solution : Solution, project : Project):
     lines.append('  <Target Name="CoreCompile" />')
     lines.append('</Project>')
     
-    project_filepath = os.path.join(util.bcs_root_dir, project_filepath)
+    project_filepath = os.path.join(util.get_project_root_dir(), project_filepath)
     os.makedirs(os.path.dirname(project_filepath), exist_ok=True)
     if util.write_file_if_changed(project_filepath, lines):
         print(project_filepath, "changed")
 
 def write_project_file(lines : list[str], project : Project, file : str):
     project_filepath = project.get_project_filepath()
-    file_absolute_path = gn.system_path(util.bcs_root_dir, file)
-    solution_absolute_path = os.path.join(util.bcs_root_dir, project_filepath)
+    file_absolute_path = gn.system_path(util.get_project_root_dir(), file)
+    solution_absolute_path = os.path.join(util.get_project_root_dir(), project_filepath)
     solution_absolute_directory = os.path.dirname(solution_absolute_path)
     file_relative_path = os.path.relpath(file_absolute_path, solution_absolute_directory)
     file_relative_path_split = os.path.splitext(file_relative_path)
@@ -477,7 +477,7 @@ def write_cpp_project(solution : Solution, project : Project):
             if len(description.outputs):
                 output_file = description.outputs[0]
 
-            output_directory = gn.system_path(util.bcs_root_dir, osplatformconfig.output_root)
+            output_directory = gn.system_path(util.get_project_root_dir(), osplatformconfig.output_root)
             ninja = util.get_ninja()
             build_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
             rebuild_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
@@ -511,13 +511,13 @@ def write_cpp_project(solution : Solution, project : Project):
             include_path = list(dict.fromkeys(include_path))
             external_include_path = list(dict.fromkeys(external_include_path))
 
-            output_file = gn.system_path(util.bcs_root_dir, output_file)
+            output_file = gn.system_path(util.get_project_root_dir(), output_file)
             for i, include in enumerate(include_search_path):
-                include_search_path[i] = gn.system_path(util.bcs_root_dir, include)
+                include_search_path[i] = gn.system_path(util.get_project_root_dir(), include)
             for i, include in enumerate(include_path):
-                include_path[i] = gn.system_path(util.bcs_root_dir, include)
+                include_path[i] = gn.system_path(util.get_project_root_dir(), include)
             for i, include in enumerate(external_include_path):
-                external_include_path[i] = gn.system_path(util.bcs_root_dir, include)
+                external_include_path[i] = gn.system_path(util.get_project_root_dir(), include)
         else:
             output_file = ""
             build_command = "rem"
@@ -562,7 +562,7 @@ def write_cpp_project(solution : Solution, project : Project):
     lines.append(f'</Project>')
 
     project_filepath = project.get_project_filepath()
-    project_filepath = os.path.join(util.bcs_root_dir, project_filepath)
+    project_filepath = os.path.join(util.get_project_root_dir(), project_filepath)
     os.makedirs(os.path.dirname(project_filepath), exist_ok=True)
     if util.write_file_if_changed(project_filepath, lines):
         print(project_filepath, "changed")
@@ -570,8 +570,8 @@ def write_cpp_project(solution : Solution, project : Project):
 
 def write_project_filter_file(lines : list[str], project : Project, file : str):
     project_filepath = project.get_project_filepath()
-    file_absolute_path = gn.system_path(util.bcs_root_dir, file)
-    solution_absolute_path = os.path.join(util.bcs_root_dir, project_filepath)
+    file_absolute_path = gn.system_path(util.get_project_root_dir(), file)
+    solution_absolute_path = os.path.join(util.get_project_root_dir(), project_filepath)
     solution_absolute_directory = os.path.dirname(solution_absolute_path)
     file_relative_path = os.path.relpath(file_absolute_path, solution_absolute_directory)
     file_relative_path_split = os.path.splitext(file_relative_path)
@@ -629,7 +629,7 @@ def write_cpp_project_filters(solution : Solution, project : Project):
     lines.append('</Project>')
 
     project_filters_filepath = project.get_project_filters_filepath()
-    project_filters_filepath = os.path.join(util.bcs_root_dir, project_filters_filepath)
+    project_filters_filepath = os.path.join(util.get_project_root_dir(), project_filters_filepath)
     os.makedirs(os.path.dirname(project_filters_filepath), exist_ok=True)
     if util.write_file_if_changed(project_filters_filepath, lines):
         print(project_filters_filepath, "changed")

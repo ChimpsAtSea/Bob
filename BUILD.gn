@@ -1,11 +1,11 @@
-import("//toolchain/bcs_projects.gni")
+import("//toolchain/bob_projects.gni")
 
-bcs_source_set("all_build") {
+bob_source_set("all_build") {
   deps = [
     ":test" ]
 }
 
-bcs_executable("test") {
+bob_executable("test") {
   sources = [
     "test/test.cpp" ]
 }

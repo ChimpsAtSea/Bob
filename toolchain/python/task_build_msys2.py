@@ -29,6 +29,6 @@ class MSYS2BuildTask(BuildTask):
         msys2_download_extract_task.build()
         
         bash = os.path.join(util.bcs_msys2_dir, 'usr/bin/bash')
-        shell_script = os.path.join(util.bcs_root_dir, 'toolchain\msys2_firstrun.sh')
+        shell_script = os.path.join(util.get_root_dir(), 'toolchain\msys2_firstrun.sh')
         process = subprocess.Popen([bash, '-l', shell_script])
         process.wait()

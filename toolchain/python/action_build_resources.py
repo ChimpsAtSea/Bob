@@ -38,8 +38,8 @@ for index, source in enumerate(sources):
     filename = os.path.basename(abs_source)
     output = os.path.join(util.root_build_dir, output_subdirectory, filename)
 
-    source_root_relative_path = os.path.relpath(source, util.bcs_root_dir)
-    output_root_relative_path = os.path.relpath(output, util.bcs_root_dir)
+    source_root_relative_path = os.path.relpath(source, util.get_project_root_dir())
+    output_root_relative_path = os.path.relpath(output, util.get_project_root_dir())
 
     #print("Copying", source_root_relative_path, output_root_relative_path)
     copy_tasks.append(CopyBuildTask(source, output))
