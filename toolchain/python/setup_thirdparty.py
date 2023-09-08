@@ -21,6 +21,7 @@ from task_build_msys2 import MSYS2BuildTask
 from task_build_winpix3 import WinPix3BuildTask
 from task_build_assimp import AssimpBuildTask
 from task_build_cmake import CMakeBuildTask
+from task_build_detours import DetoursBuildTask
 from task_build_download import download_extract_task
 
 util.async_start()
@@ -115,6 +116,7 @@ ninja_build_task = NinjaBuildTask([ewdk_task])
 gn_build_task = GNBuildTask([ninja_build_task])
 msys2_init_task = MSYS2BuildTask()
 yasm_build_task = YasmBuildTask([cmake_task, ninja_build_task])
+detours_build_task = DetoursBuildTask([])
 
 #zlib_build_task = ZlibBuildTask([cmake_task, ninja_build_task])
 #zlib_build_tasks = [

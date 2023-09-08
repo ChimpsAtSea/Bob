@@ -77,9 +77,10 @@ class VisualCPPBuildTask(BuildTask):
         super().__init__(name, _parent_tasks)
 
         [architecture, *_] = platform.architecture()
-        #msvc_host = 'HostX64' if architecture == '64bit' else 'HostX86'
-        self.msvc_host = 'HostX86'
+        self.msvc_host = 'HostX64' if architecture == '64bit' else 'HostX86'
         self.msvc_host_short = 'x64' if architecture == '64bit' else 'x86'
+        #self.msvc_host = 'HostX86'
+        #self.msvc_host_short = 'x86'
 
         self.msvc_target = msvc_target
 
@@ -92,6 +93,15 @@ class VisualCPPBuildTask(BuildTask):
 
         environment['CL'] = ''
         environment['LINK'] = ''
+        
+        if self.msvc_target == 'x64':
+            environment['PROCESSOR_ARCHITECTURE'] = 'AMD64'
+        if self.msvc_target == 'x86':
+            environment['PROCESSOR_ARCHITECTURE'] = 'X86'
+        if self.msvc_target == 'arm':
+            environment['PROCESSOR_ARCHITECTURE'] = 'ARM'
+        if self.msvc_target == 'arm64':
+            environment['PROCESSOR_ARCHITECTURE'] = 'ARM64'
 
         paths = [
             util.get_ewdk_dir(f''),
@@ -107,6 +117,7 @@ class VisualCPPBuildTask(BuildTask):
             util.get_ewdk_dir(f'Program Files/Microsoft Visual Studio/2022/BuildTools/Common7/IDE/VC/Linux/bin/ConnectionManagerExe'),
             util.get_ewdk_dir(f'Program Files/Windows Kits/10/bin/10.0.22621.0/{self.msvc_host_short}'),
             util.get_ewdk_dir(f'Program Files/Windows Kits/10/tools'),
+            util.get_ewdk_dir(f'Program Files/Microsoft SDKs/Windows/v10.0A/bin/NETFX 4.8.1 Tools'),
             util.get_ewdk_dir(f'BuildEnv'),
             os.path.join(environment['SYSTEMROOT'], 'System32') #TODO: Can this be handled better?. Required for cmd.exe
         ]
@@ -138,6 +149,12 @@ class VisualCPPBuildTask(BuildTask):
         environment['LIB'] = ';'.join(linker_library)
 
         self.environment = environment
+
+    def get_nmake(self):
+        nmake = util.get_ewdk_dir(os.path.join(f'Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/bin/{self.msvc_host}/{self.msvc_target}', 'nmake.exe'))
+        if not os.path.exists(nmake):
+            raise Exception(f"EWDK invalid. Can't find {nmake}")
+        return nmake
 
     def build(self):
         super().build()
