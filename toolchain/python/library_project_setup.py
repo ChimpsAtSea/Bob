@@ -112,7 +112,11 @@ def get_target_os_cpus(target_os : str):
         ]
     }
     if key in lookup:
-        return lookup[key]
+        os_cpus = lookup[key]
+        specific_build_arch = util.get_build_arch()
+        if specific_build_arch:
+            return list(set(os_cpus) & set([specific_build_arch]))
+        return os_cpus
     else:
         print(target_os, key)
         raise("Invalid target_os")

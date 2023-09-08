@@ -265,6 +265,7 @@ def patch_build_configuration_files(target_os: str, target_config: str, target_l
                 bob_solution_pretty_name = util.get_solution_pretty_name()
                 bob_solution_namespace = util.get_solution_namespace()
                 bob_build_target = util.get_build_target()
+                bob_build_arch = util.get_build_arch()
                 bob_enable_profile = util.get_enable_profile()
 
                 args = [
@@ -280,6 +281,8 @@ def patch_build_configuration_files(target_os: str, target_config: str, target_l
                 f'--bob-solution-namespace "{bob_solution_namespace}"' ]
                 if bob_build_target:
                     args += [ f'--bob-build-target "{bob_build_target}"' ]
+                if bob_build_arch:
+                    args += [ f'--bob-build-arch "{bob_build_arch}"' ]
                 if bob_enable_profile:
                     args += [ f'--bob-enable-profile "{bob_enable_profile}"' ]
 

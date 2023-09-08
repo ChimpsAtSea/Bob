@@ -36,6 +36,7 @@ parser.add_dir_argument('--bob-project-root-directory', required=True)
 parser.add_argument('--bob-solution-pretty-name')
 parser.add_argument('--bob-solution-namespace')
 
+parser.add_argument('--bob-build-arch', type=str, choices=['x86', 'x64', 'arm', 'arm64', 'webassembly'])
 parser.add_argument('--bob-build-target', type=str, choices=['all', 'windows', 'linux', 'webassembly'])
 parser.add_argument('--bob-enable-profile', type=str)
 
@@ -113,6 +114,7 @@ def get_directory_argument(argument_name : str, subdirectory : str):
         raise Exception(f'Subdirectory for argument {argument_name} does not exist', argument_name, base_directory, subdirectory, directory)
     return directory
 
+
 def get_root_dir(subdirectory : str = None) -> str:
     return get_directory_argument('bob_root_directory', subdirectory)
 def get_thirdparty_dir(subdirectory : str = None) -> str:
@@ -127,6 +129,8 @@ def get_solution_namespace() -> str:
     return get_argument('bob_solution_namespace')
 def get_build_target() -> tuple[str, None]:
     return get_argument('bob_build_target', build_target)
+def get_build_arch() -> tuple[str, None]:
+    return get_argument('bob_build_arch', '') or None
 def get_enable_profile() -> bool:
     return parse_argument_bool(get_argument('bob_enable_profile', 'false'))
 def get_gn_target_os() -> str:
