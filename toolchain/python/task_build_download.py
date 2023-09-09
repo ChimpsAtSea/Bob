@@ -2,6 +2,7 @@
 import os
 import subprocess
 from task_manager import BuildTask
+from task_build_copy import CopyBuildTask
 import library_util as util
 
 class DownloadBuildTask(BuildTask):
@@ -29,3 +30,10 @@ def download_extract_task(ExtractTask, url, cache_filename, output_directory, fo
     download_task = DownloadBuildTask(url, download_filepath)
     extract_task = ExtractTask(download_filepath, output_directory, [download_task], force)
     return extract_task
+
+def download_copy_task(url, cache_filename, output_directory, force = False):
+    download_filepath = os.path.join(util.get_download_cache_dir(), cache_filename)
+    download_task = DownloadBuildTask(url, download_filepath)
+    output_filepath = os.path.join(output_directory, cache_filename)
+    copy_task = CopyBuildTask(download_filepath, output_filepath, [download_task], force)
+    return copy_task

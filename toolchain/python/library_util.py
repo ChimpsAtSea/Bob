@@ -183,7 +183,7 @@ def _get_thirdparty_subdir(name, subdirectory, subpath):
         raise Exception(f'Requested thirdparty directory is invalid', name, subdirectory)
     directory = os.path.join(get_thirdparty_dir(), subdirectory)
     directory = os.path.abspath(directory)
-    if not os.path.exists(directory):
+    if ignore_missing_subdirectories == 0 and not os.path.exists(directory):
         raise Exception(f'Requested thirdparty directory doesn\'t exist', name, subdirectory, directory)
     if subpath is not None:
         directory = os.path.join(directory, subpath)
@@ -204,7 +204,9 @@ def get_gn_dir(subpath : str = None):
 def get_ninja_dir(subpath : str = None):
     return _get_thirdparty_subdir('ninja', 'ninja/ninja_build', subpath)
 def get_python_dir(subpath : str = None):
-    return _get_thirdparty_subdir('python', 'python-3.11.1', subpath)
+    return _get_thirdparty_subdir('python', 'python/python-3.11.1', subpath)
+def get_pip_dir(subpath : str = None):
+    return _get_thirdparty_subdir('python', 'python/pip', subpath)
 def get_ewdk_dir(subpath : str = None):
     return _get_thirdparty_subdir('ewdk', 'EWDK/EWDK_ni_release_svc_prod1_22621_220804-1759', subpath)
 def get_msys2_dir(subpath : str = None):
@@ -234,6 +236,8 @@ def get_ninja():
     return _get_thirdparty_executable_exists(get_ninja_dir(), f'ninja{host_executable_suffix}')
 def get_python():
     return _get_thirdparty_executable_exists(get_python_dir(), f'python{host_executable_suffix}')
+def get_pip():
+    return _get_thirdparty_executable_exists(get_pip_dir(), f'pip.pyz')
 def get_cmake():
     return _get_thirdparty_executable_exists(get_cmake_dir(), f'cmake{host_executable_suffix}')
 def get_7z():

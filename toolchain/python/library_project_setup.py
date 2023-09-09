@@ -22,7 +22,7 @@ import library_engine_platform_build as epb
 
 #TODO: This is a nasty hack, need a better way to format paths to match the GN specification
 buildconfig_relpath = '//' + os.path.relpath(os.path.join(util.get_root_dir(), 'toolchain/BUILDCONFIG.gn'), util.get_project_root_dir()).replace('\\', '/')
-python_relpath = os.path.join(util.get_thirdparty_dir(), 'python-3.11.1/python.exe')
+python_path = util.get_python()
 
 def gn_setup_build_environment():
     with open('.gn', 'w') as f:
@@ -30,7 +30,7 @@ def gn_setup_build_environment():
 
         lines += ['# The location of the build configuration file.']
         lines += [f'buildconfig = "{buildconfig_relpath}"']
-        lines += [f'script_executable = "{python_relpath}"']
+        lines += [f'script_executable = "{python_path}"']
         lines += ['ninja_required_version="1.12.0"']
         lines += ['export_compile_commands=["*"]']
 

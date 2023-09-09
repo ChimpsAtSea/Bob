@@ -340,7 +340,7 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-# Blam Creation Suite
+# Third Party
 thirdparty/7-Zip/
 thirdparty/cmake/
 thirdparty/ninja/ninja_build/
@@ -349,7 +349,7 @@ thirdparty/ffmpeg/ffmpeg_build_*/
 thirdparty/musl/
 thirdparty/llvm/
 thirdparty/msys2/
-thirdparty/python-3.11.1/
+thirdparty/python/
 thirdparty/wasi/
 thirdparty/winpix3/winpixeventruntime.1.0.220810001/
 thirdparty/yasm/yasm_build/
@@ -364,6 +364,5 @@ thirdparty/detours/detours_build/
 downloadcache/
 solution/
 build/
-
 !toolchain/thirdparty
 .gn

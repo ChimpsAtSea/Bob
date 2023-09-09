@@ -647,8 +647,8 @@ def write_cpp_project_filters(solution : Solution, project : Project):
     #lines.append('    </Filter>')
     lines.append('  </ItemGroup>')
 
-    print(filters)
-    print(sources)
+    #util.dprint(filters)
+    #util.dprint(sources)
     
     lines.append(f'  <ItemGroup>')
     for source in sources:

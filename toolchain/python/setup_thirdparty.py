@@ -22,7 +22,10 @@ from task_build_winpix3 import WinPix3BuildTask
 from task_build_assimp import AssimpBuildTask
 from task_build_cmake import CMakeBuildTask
 from task_build_detours import DetoursBuildTask
+from task_build_iced_x86 import IcedX86BuildTask
 from task_build_download import download_extract_task
+from task_build_download import download_copy_task
+from task_build_copy import CopyBuildTask
 
 util.async_start()
 
@@ -124,6 +127,13 @@ detours_build_tasks = [
     DetoursBuildTask('x64', 'debug', []),
     DetoursBuildTask('x86', 'release', []),
     DetoursBuildTask('x86', 'debug', []) ]
+
+pip_directory = util.get_pip_dir()
+pip_task = download_copy_task('https://bootstrap.pypa.io/pip/pip.pyz',
+    'pip.pyz',
+    pip_directory)
+
+iced_x86_task = IcedX86BuildTask([pip_task])
 
 #zlib_build_task = ZlibBuildTask([cmake_task, ninja_build_task])
 #zlib_build_tasks = [

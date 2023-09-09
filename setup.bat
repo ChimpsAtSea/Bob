@@ -27,7 +27,7 @@ IF NOT EXIST %bob_third_party_dir%\7z2201-x64\Files\7-Zip\7z.exe msiexec /a %bob
 rem Download Python
 IF NOT EXIST %bob_download_cache_dir%\python-3.11.1-embed-amd64.zip curl -L https://www.python.org/ftp/python/3.11.1/python-3.11.1-embed-amd64.zip -o %bob_download_cache_dir%\python-3.11.1-embed-amd64.zip
 rem Extract Python
-IF NOT EXIST %bob_third_party_dir%\python-3.11.1\ %bob_7z_dir%\Files\7-Zip\7z.exe x -y %bob_download_cache_dir%\python-3.11.1-embed-amd64.zip -o%bob_third_party_dir%\python-3.11.1\
-set bob_python_dir=%bob_third_party_dir%\python-3.11.1
+IF NOT EXIST %bob_third_party_dir%\python\python-3.11.1\ %bob_7z_dir%\Files\7-Zip\7z.exe x -y %bob_download_cache_dir%\python-3.11.1-embed-amd64.zip -o%bob_third_party_dir%\python\python-3.11.1\
+set bob_python_dir=%bob_third_party_dir%\python\python-3.11.1
 
 %bob_python_dir%/python %bob_root%/toolchain/python/setup_generate_solution.py --bob-root-directory "%bob_root%\"  --bob-project-root-directory "%bob_project_root%\" --bob-thirdparty-directory "%bob_third_party_dir%" --bob-download-cache-directory "%bob_download_cache_dir%" %*
