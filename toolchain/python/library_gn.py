@@ -199,6 +199,12 @@ def system_path(project_root : str, path : str):
     else:
         return path
 
+def root_relative_path(path : str):
+    if path.startswith("//"):
+        return path[2:]
+    else:
+        raise Exception("Handling non gn-root paths unsupported", path)
+
 def patch_build_configuration_files(target_os: str, target_config: str, target_link_config: str, target_cpu: str):
     target_directory = os.path.join(util.get_project_root_dir(), f'solution/{target_os}-{target_config}-{target_cpu}-{target_link_config}')
     build_ninja_filepath = os.path.join(target_directory, "build.ninja")

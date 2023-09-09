@@ -9,6 +9,11 @@ import library_util as util
 from library_util import pretty_print_dict
 from library_util import timer_func
 from hashlib import md5
+import glob
+
+def create_guid(prefix, str):
+    digest = md5(bytes(f"{prefix}{str}", "utf-8"), usedforsecurity=False).digest()
+    return uuid.UUID(bytes=digest[:16], version=3)
 
 class TargetSettings:
     target_os : str = None
@@ -98,11 +103,9 @@ class Project:
     solution = None
 
     def __init__(self, name, solution):
-        digest = md5(bytes(f"project-{name}", "utf-8"), usedforsecurity=False).digest()
-
         self.name = name
         self.namespace = re.sub(r'[^0-9a-zA-Z]+', '', name)
-        self.guid = uuid.UUID(bytes=digest[:16], version=3)
+        self.guid = create_guid('project-', name)
         self.targets = list[gn.Target]()
         self.descriptions = list[DescriptionAndOSPlatformConfiguration]()
         self.solution = solution
@@ -572,8 +575,14 @@ def write_cpp_project(solution : Solution, project : Project):
     if util.write_file_if_changed(project_filepath, lines):
         print(project_filepath, "changed")
 
+def get_project_file_filter(file : str):
+    filter = os.path.dirname(gn.root_relative_path(file))
+    return filter
 
 def write_project_filter_file(lines : list[str], project : Project, file : str):
+    header_extensions = [ ".h", ".hh", ".hpp", ".hxx", ".h++", ".hm", ".inl", ".inc", ".ipp", ".xsd", ".hlsli" ]
+    source_extensions = [ ".cpp", ".c", ".cc", ".cxx", ".c++", ".cppm", ".ixx", ".def", ".odl", ".idl", ".hpj", ".bat", ".asm", ".asmx", ".hlsl" ]
+
     project_filepath = project.get_project_filepath()
     file_absolute_path = gn.system_path(util.get_project_root_dir(), file)
     solution_absolute_path = os.path.join(util.get_project_root_dir(), project_filepath)
@@ -581,38 +590,53 @@ def write_project_filter_file(lines : list[str], project : Project, file : str):
     file_relative_path = os.path.relpath(file_absolute_path, solution_absolute_directory)
     file_relative_path_split = os.path.splitext(file_relative_path)
     file_extension = "" if len(file_relative_path_split) <= 1 else file_relative_path_split[1]
-    header_extensions = [ ".h", ".hh", ".hpp", ".hxx", ".h++", ".hm", ".inl", ".inc", ".ipp", ".xsd", ".hlsli" ]
-    source_extensions = [ ".cpp", ".c", ".cc", ".cxx", ".c++", ".cppm", ".ixx", ".def", ".odl", ".idl", ".hpj", ".bat", ".asm", ".asmx", ".hlsl" ]
-    #ninja_extensions = [ ".gn" ]
 
+    filter_tag = 'None'
+    filter = get_project_file_filter(file)
+    filter = filter.replace("/", "\\")
     if file_extension in header_extensions:
-        lines.append(f'    <ClInclude Include="{html.escape(file_relative_path)}">')
-        lines.append('      <Filter>Header Files</Filter>')
-        lines.append('    </ClInclude>')
+        filter_tag = 'ClInclude'
+        #filter = 'Header Files'
     elif file_extension in source_extensions:
-        lines.append(f'    <ClCompile Include="{html.escape(file_relative_path)}">')
-        lines.append('      <Filter>Source Files</Filter>')
-        lines.append('    </ClCompile>')
-    #elif file_extension in ninja_extensions:
-    #    lines.append(f'    <None Include="{html.escape(file_relative_path)}">')
-    #    lines.append('      <Filter>GN Files</Filter>')
-    #    lines.append('    </None>')
-    else:
-        pass
+        filter_tag = 'ClCompile'
+        #filter = 'Source Files'
+
+    lines.append(f'    <{filter_tag} Include="{html.escape(file_relative_path)}">')
+    if filter:
+        lines.append(f'      <Filter>{filter}</Filter>')
+    lines.append(f'    </{filter_tag}>')
 
 def write_cpp_project_filters(solution : Solution, project : Project):
+
+    filters = set[str]()
+    sources = set[str]()
+    for description_and_osplatformconfig in project.descriptions:
+        osplatformconfig = description_and_osplatformconfig.osplatformconfig
+        description = description_and_osplatformconfig.description
+        for source in description.sources:
+            sources.add(source)
+            filters.add(get_project_file_filter(source))
+    filters = sorted(filters)
+    sources = sorted(sources)
+    
     lines = []
     lines.append('<?xml version="1.0" encoding="utf-8"?>')
     lines.append('<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">')
     lines.append('  <ItemGroup>')
-    lines.append('    <Filter Include="Source Files">')
-    lines.append('      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>')
-    lines.append('      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx;hlsl</Extensions>')
-    lines.append('    </Filter>')
-    lines.append('    <Filter Include="Header Files">')
-    lines.append('      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>')
-    lines.append('      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd;hlsli</Extensions>')
-    lines.append('    </Filter>')
+    for filter in filters:
+        if filter:
+            filter = filter.replace("/", "\\")
+            lines.append(f'    <Filter Include="{filter}">')
+            lines.append(f'      <UniqueIdentifier>{{{str(create_guid("filter-", filter)).upper()}}}</UniqueIdentifier>')
+            lines.append(f'    </Filter>')
+    #lines.append('    <Filter Include="Source Files">')
+    #lines.append('      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>')
+    #lines.append('      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx;hlsl</Extensions>')
+    #lines.append('    </Filter>')
+    #lines.append('    <Filter Include="Header Files">')
+    #lines.append('      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>')
+    #lines.append('      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd;hlsli</Extensions>')
+    #lines.append('    </Filter>')
     #lines.append('    <Filter Include="Resource Files">')
     #lines.append('      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>')
     #lines.append('      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>')
@@ -622,15 +646,24 @@ def write_cpp_project_filters(solution : Solution, project : Project):
     #lines.append('      <Extensions>gn</Extensions>')
     #lines.append('    </Filter>')
     lines.append('  </ItemGroup>')
-    for description_and_osplatformconfig in project.descriptions:
-        osplatformconfig = description_and_osplatformconfig.osplatformconfig
-        description = description_and_osplatformconfig.description
-        lines.append(f'  <!-- {osplatformconfig.vs_triplet} Sources -->')
-        lines.append(f'  <ItemGroup Condition="\'$(Configuration)|$(Platform)\'==\'{osplatformconfig.vs_triplet}\'">')
-        for source in description.sources:
-            write_project_filter_file(lines, project, source)
-        write_project_filter_file(lines, project, description.target.buildfile)
-        lines.append(f'  </ItemGroup>')
+
+    print(filters)
+    print(sources)
+    
+    lines.append(f'  <ItemGroup>')
+    for source in sources:
+        write_project_filter_file(lines, project, source)
+    lines.append(f'  </ItemGroup>')
+
+    #for description_and_osplatformconfig in project.descriptions:
+    #    osplatformconfig = description_and_osplatformconfig.osplatformconfig
+    #    description = description_and_osplatformconfig.description
+    #    lines.append(f'  <!-- {osplatformconfig.vs_triplet} Sources -->')
+    #    lines.append(f'  <ItemGroup Condition="\'$(Configuration)|$(Platform)\'==\'{osplatformconfig.vs_triplet}\'">')
+    #    for source in description.sources:
+    #        write_project_filter_file(lines, project, source)
+    #    write_project_filter_file(lines, project, description.target.buildfile)
+    #    lines.append(f'  </ItemGroup>')
     lines.append('</Project>')
 
     project_filters_filepath = project.get_project_filters_filepath()
@@ -657,13 +690,14 @@ def write_cpp_project_user(solution : Solution, project : Project):
     custom_user_props_line = f'  <Import Project="$(SolutionDir)..\\toolchain\\Custom.User.props" Condition="Exists(\'$(SolutionDir)..\\toolchain\\Custom.User.props\')" />'
 
     lines = list[str]()
-    with open_bom_aware(project_user_filepath, 'r') as file:
-        lines = file.readlines()
-        lines : list[str]
-        for index, line in enumerate(lines):
-            lines[index] = line.rstrip()
+    if os.path.exists(project_user_filepath):
+        with open_bom_aware(project_user_filepath, 'r') as file:
+            lines = file.readlines()
+            lines : list[str]
+            for index, line in enumerate(lines):
+                lines[index] = line.rstrip()
 
-    if custom_user_props_line in lines:
+    while custom_user_props_line in lines:
         lines.remove(custom_user_props_line)
 
     if not lines:

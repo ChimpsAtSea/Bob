@@ -83,6 +83,10 @@ def parse_argument_bool(argument : str):
 
 debug = parse_argument_bool(get_argument('debug', 'false'))
 
+def dprint(*args):
+    if debug:
+        print(*args)
+
 if unknown:
     print("Unknown arguments", unknown)
 
