@@ -2,6 +2,8 @@ import uuid
 import re
 import html
 import os
+import io
+import codecs
 import library_gn as gn
 import library_util as util
 from library_util import pretty_print_dict
@@ -160,6 +162,9 @@ class Project:
 
     def get_project_filters_filepath(self):
         return self.get_project_filepath() + ".filters"
+
+    def get_project_user_filepath(self):
+        return self.get_project_filepath() + ".user"
     
     def get_description(self, osplatformconfig):
         for description in self.descriptions:
@@ -634,6 +639,45 @@ def write_cpp_project_filters(solution : Solution, project : Project):
     if util.write_file_if_changed(project_filters_filepath, lines):
         print(project_filters_filepath, "changed")
 
+def open_bom_aware(filepath, mode):
+    file = None
+    with open(filepath, 'rb') as raw:
+        bom = raw.read(len(codecs.BOM_UTF8))
+        if bom == codecs.BOM_UTF8:
+            encoding = 'utf-8-sig'
+            file = io.open(filepath, mode, encoding=encoding)
+        else:
+            file = open(filepath, mode)
+    return file
+
+def write_cpp_project_user(solution : Solution, project : Project):
+    project_user_filepath = project.get_project_user_filepath()
+    project_user_filepath = os.path.join(util.get_project_root_dir(), project_user_filepath)
+
+    custom_user_props_line = f'  <Import Project="$(SolutionDir)..\\toolchain\\Custom.User.props" Condition="Exists(\'$(SolutionDir)..\\toolchain\\Custom.User.props\')" />'
+
+    lines = list[str]()
+    with open_bom_aware(project_user_filepath, 'r') as file:
+        lines = file.readlines()
+        lines : list[str]
+        for index, line in enumerate(lines):
+            lines[index] = line.rstrip()
+
+    if custom_user_props_line in lines:
+        lines.remove(custom_user_props_line)
+
+    if not lines:
+        lines.append('<?xml version="1.0" encoding="utf-8"?>')
+        lines.append('<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">')
+        lines.append('</Project>')
+
+    lines.insert(2, custom_user_props_line)
+
+    os.makedirs(os.path.dirname(project_user_filepath), exist_ok=True)
+    if util.write_file_if_changed(project_user_filepath, lines):
+        print(project_user_filepath, "changed")
+
+
 def write_project(solution : Solution, project : Project):
         project_type = project.get_project_type()
         if project_type == "python_library":
@@ -641,3 +685,4 @@ def write_project(solution : Solution, project : Project):
         else:
             write_cpp_project(solution, project)
             write_cpp_project_filters(solution, project)
+            write_cpp_project_user(solution, project)
