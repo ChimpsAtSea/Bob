@@ -14,7 +14,9 @@ class NinjaBuildTask(VisualCPPBuildTask):
         source_directory = os.path.join(util.get_thirdparty_dir(), f'ninja/ninja')
         build_directory = os.path.join(util.get_thirdparty_dir(), f'ninja/ninja_build')
 
+        util.ignore_missing_filepaths += 1
         ninja = util.get_ninja()
+        util.ignore_missing_filepaths -= 1
 
         if os.path.exists(ninja):
             return # Don't rebuild

@@ -9,6 +9,7 @@ import inspect
 from typing import Union, Callable, Iterable, Any, TypeVar, TypeAlias, NewType
 
 ignore_missing_subdirectories = 0
+ignore_missing_filepaths = 0
 
 def argparse_is_directory(argument, directory):
     directory = os.path.abspath(directory)
@@ -215,9 +216,9 @@ def get_msys2_dir(subpath : str = None):
     msys2_subdirectory = f'msys2/{msys2_version}/msys64'
     return _get_thirdparty_subdir('msys2', msys2_subdirectory, subpath)
 def get_cmake_dir(subpath : str = None):
-    return _get_thirdparty_subdir('cmake', None, subpath)
+    return _get_thirdparty_subdir('cmake', 'cmake/cmake-3.25.2-windows-x86_64/bin', subpath)
 def get_7z_dir(subpath : str = None):
-    return _get_thirdparty_subdir('7z', '7-Zip/7z2201-x64', subpath)
+    return _get_thirdparty_subdir('7z', '7-Zip/7z2201-x64/Files/7-Zip', subpath)
 def get_yasm_dir(subpath : str = None):
     return _get_thirdparty_subdir('yasm', None, subpath)
 def get_winpix3_dir(subpath : str = None):
@@ -226,7 +227,7 @@ def get_winpix3_dir(subpath : str = None):
 def _get_thirdparty_executable_exists(directory, filename):
     filepath = os.path.join(directory, filename)
     filepath = os.path.abspath(filepath)
-    if not os.path.exists(filepath):
+    if ignore_missing_filepaths == 0 and not os.path.exists(filepath):
         raise Exception(f'Requested thirdparty filepath doesn\'t exist', filepath, directory, filename)
     return filepath
 

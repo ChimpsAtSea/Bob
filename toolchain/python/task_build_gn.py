@@ -11,7 +11,11 @@ class GNBuildTask(VisualCPPBuildTask):
     def build(self):
         super().build()
 
-        if os.path.exists(util.get_gn()):
+        util.ignore_missing_filepaths += 1
+        gn = util.get_gn()
+        util.ignore_missing_filepaths -= 1
+
+        if os.path.exists(gn):
             return # Don't rebuild
         
         source_directory = os.path.join(util.get_thirdparty_dir(), f'gn/gn')

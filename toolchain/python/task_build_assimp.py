@@ -87,7 +87,7 @@ class AssimpBuildTask(VisualCPPBuildTask):
                         flags_list = shlex.split(flags)
                         new_flags_list = []
                         for flag in flags_list:
-                            if not flag is '/MD':
+                            if flag != '/MD':
                                 new_flags_list.append(flag)
                         new_flags = shlex.join(new_flags_list)
                         build_ninja[index] = f'  FLAGS = {new_flags}\n'
