@@ -45,6 +45,7 @@ parser.add_argument('--bob-build-arch', type=str, choices=['x86', 'x64', 'arm', 
 parser.add_argument('--bob-build-target', type=str, choices=['all', 'windows', 'linux', 'webassembly'])
 parser.add_argument('--bob-enable-profile', type=str)
 
+parser.add_argument('--bob-prebuild-force', type=str)
 parser.add_argument('--bob-prebuild-max-threads', type=int)
 parser.add_argument('--bob-prebuild-use-lto', type=str)
 
@@ -270,6 +271,14 @@ def get_cmake():
     return _get_thirdparty_executable_exists(get_cmake_dir(), f'cmake{host_executable_suffix}')
 def get_7z():
     return _get_thirdparty_executable_exists(get_7z_dir(), f'7z{host_executable_suffix}')
+
+def get_force_rebuild_names() -> list[str]:
+    force_rebuild_names = get_argument('bob_prebuild_force', '').split(';')
+    return force_rebuild_names
+
+def force_ninja_rebuild():
+    force_rebuild_names = get_force_rebuild_names()
+    return 'ninja' in force_rebuild_names
 
 
 #TODO: This is terrible, but everything I've tried from os/multiprocessing returns the local count
