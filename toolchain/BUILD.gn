@@ -432,7 +432,17 @@ toolchain("clang")
       extra_objects += [ rebase_path(bob_third_party_dir + "/linux-musl/$target_tuple_cpu-$target_tuple_os-native/lib/crt1.o") ]
     }
     if(is_target_windows || is_target_webassembly || is_target_linux) {
-      command = ld + " {{ldflags}} {{libs}} {{solibs}} {{rlibs}} {{inputs}} " + string_join(" ", extra_objects) + " " + string_join(" ", link_ldflags)
+      command_parts = []
+      command_parts += ["{{ldflags}}"]
+      command_parts += ["{{libs}}"]
+      command_parts += ["{{solibs}}"]
+      command_parts += ["{{rlibs}}"]
+      command_parts += ["{{inputs}}"]
+      command_parts += extra_objects
+      command_parts += link_ldflags
+      rspfile = "{{output}}.rsp"
+      rspfile_content = string_join(" ", command_parts)
+      command = string_join(" ", [ld, "@{{output}}.rsp"])
     } else {
       fail("Error: solink unsupported")
     }
