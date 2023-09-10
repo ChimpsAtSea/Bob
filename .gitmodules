@@ -67,3 +67,6 @@
 [submodule "thirdparty/detours/detours"]
 	path = thirdparty/detours/detours
 	url = https://github.com/microsoft/Detours.git
+[submodule "thirdparty/llvm/llvm-project"]
+	path = thirdparty/llvm/llvm-project
+	url = https://github.com/llvm/llvm-project.git

@@ -7,6 +7,8 @@ import fnmatch
 import argparse
 import inspect
 from typing import Union, Callable, Iterable, Any, TypeVar, TypeAlias, NewType
+import multiprocessing
+import subprocess
 
 ignore_missing_subdirectories = 0
 ignore_missing_filepaths = 0
@@ -43,6 +45,9 @@ parser.add_argument('--bob-build-arch', type=str, choices=['x86', 'x64', 'arm', 
 parser.add_argument('--bob-build-target', type=str, choices=['all', 'windows', 'linux', 'webassembly'])
 parser.add_argument('--bob-enable-profile', type=str)
 
+parser.add_argument('--bob-prebuild-max-threads', type=int)
+parser.add_argument('--bob-prebuild-use-lto', type=str)
+
 parser.add_argument('--gn-target-os', type=str)
 parser.add_argument('--gn-target-config', type=str)
 parser.add_argument('--gn-target-link-config', type=str)
@@ -72,7 +77,7 @@ parser.add_argument('--debug', type=str)
 args, unknown = parser.parse_known_args()
 
 def get_argument(argument_name : str, default = None):
-    argument = getattr(args, argument_name)
+    argument = getattr(args, argument_name, default)
     if (default is None) and (argument is None):
         raise Exception(f'{argument_name} was not found')
     return argument or default
@@ -83,6 +88,8 @@ def parse_argument_bool(argument : str):
     return any(argument.lower() == s for s in ['true', 'yes', '1'])
 
 debug = parse_argument_bool(get_argument('debug', 'false'))
+bob_prebuild_use_lto = parse_argument_bool(get_argument('bob_prebuild_use_lto', 'false'))
+
 
 def dprint(*args):
     if debug:
@@ -192,14 +199,21 @@ def _get_thirdparty_subdir(name, subdirectory, subpath):
             raise Exception(f'Requested thirdparty subdirectory doesn\'t exist', name, subdirectory, subpath, directory)
     return directory
 
+#TODO: Find a better way to get these variables
+#llvm_version = None
+
 #TODO: Programatically get these rather than hard code them
 
-def get_llvm_dir(subpath : str = None):
+def get_llvm_root_dir(subpath : str = None):
     return _get_thirdparty_subdir('llvm', 'llvm', subpath)
+def get_llvm_project_dir(subpath : str = None):
+    return _get_thirdparty_subdir('llvm', 'llvm/llvm-project', subpath)
+def get_llvm_build_dir(subpath : str = None):
+    return _get_thirdparty_subdir('llvm', 'llvm/llvm-build', subpath)
 def get_llvm_bin_dir(subpath : str = None):
-    return _get_thirdparty_subdir('llvm', 'llvm/bin', subpath)
+    return _get_thirdparty_subdir('llvm_bin', f'llvm/llvm-build/llvm_build_release_x64/bin', subpath)
 def get_llvm_src_dir(subpath : str = None):
-    return _get_thirdparty_subdir('llvm', 'llvm/llvm-15.0.6.src', subpath)
+    return _get_thirdparty_subdir('llvm_bin', f'llvm/llvm-project/llvm', subpath)
 def get_gn_dir(subpath : str = None):
     return _get_thirdparty_subdir('gn', 'gn/gn_build', subpath)
 def get_ninja_dir(subpath : str = None):
@@ -257,6 +271,22 @@ def get_cmake():
 def get_7z():
     return _get_thirdparty_executable_exists(get_7z_dir(), f'7z{host_executable_suffix}')
 
+
+#TODO: This is terrible, but everything I've tried from os/multiprocessing returns the local count
+def _get_physical_core_count():
+    if is_host_windows:
+        command = 'wmic cpu get NumberOfCores'
+        result = subprocess.run(command, stdout=subprocess.PIPE, shell=True, text=True)
+        output_lines = result.stdout.strip().split('\n')
+        if len(output_lines) == 3:
+            return max(1, int(output_lines[2]))
+    return multiprocessing.cpu_count()
+physical_core_count = _get_physical_core_count()
+def get_physical_core_count():
+    return max(1, physical_core_count)
+def get_restricted_thread_count():
+    bob_prebuild_max_threads = getattr(args, 'bob_prebuild_max_threads')
+    return max(1, min(bob_prebuild_max_threads or physical_core_count, physical_core_count))
 
 def pretty_print_dict(
         input_dictionary,

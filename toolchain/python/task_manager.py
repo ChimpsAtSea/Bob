@@ -130,6 +130,7 @@ class VisualCPPBuildTask(BuildTask):
             util.get_ewdk_dir('Program Files/Windows Kits/10/include/10.0.22621.0/winrt'),
             util.get_ewdk_dir('Program Files/Windows Kits/10/include/10.0.22621.0/cppwinrt'),
             util.get_ewdk_dir('Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/include'),
+            util.get_ewdk_dir('Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.31.31103/atlmfc/include'),
         ]
         environment['INCLUDE'] = ';'.join(includes)
 

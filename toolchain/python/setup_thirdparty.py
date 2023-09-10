@@ -23,6 +23,7 @@ from task_build_assimp import AssimpBuildTask
 from task_build_cmake import CMakeBuildTask
 from task_build_detours import DetoursBuildTask
 from task_build_iced_x86 import IcedX86BuildTask
+from task_build_llvm import LLVMBuildTask
 from task_build_download import download_extract_task
 from task_build_download import download_copy_task
 from task_build_copy import CopyBuildTask
@@ -41,20 +42,32 @@ ewdk_task = download_extract_task(ExtractBuildTask,
     'EWDK_ni_release_svc_prod1_22621_220804-1759.iso',
     bcs_ewdk_directory)
 
-llvm_version = 'LLVM-15.0.6'
+#llvm_version = '15.0.6'
+#util.llvm_version = llvm_version #TODO: Move this
+#llvm_root_directory = util.get_llvm_root_dir()
+
+#llvm_prebuilt_directory = os.path.join(llvm_root_directory, f'llvm-{llvm_version}.prebuilt')
+#llvm_prebuilt_task = download_extract_task(ExtractBuildTask,
+#    f'https://github.com/llvm/llvm-project/releases/download/llvmorg-{llvm_version}/LLVM-{llvm_version}-win64.exe',
+#    f'LLVM-{llvm_version}-win64.exe',
+#    llvm_prebuilt_directory,
+#    force=not os.path.exists(llvm_prebuilt_directory))
+#
+#llvm_src_directory = os.path.join(llvm_root_directory, f'llvm-{llvm_version}.src')
+#llvm_src_task = download_extract_task(ExtractTarfileBuildTask,
+#    f'https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.6/llvm-{llvm_version}.src.tar.xz',
+#    f'llvm-{llvm_version}.src.tar.xz',
+#    llvm_root_directory,
+#    force=not os.path.exists(llvm_src_directory))
+
+#llvm_debug_task = LLVMBuildTask('debug', llvm_version, [llvm_prebuilt_task, llvm_src_task])
+#llvm_release_task = LLVMBuildTask('release', llvm_version, [llvm_prebuilt_task, llvm_src_task])
+llvm_task = LLVMBuildTask('release', [])
+
 llvm_directory = os.path.join(util.get_thirdparty_dir(), 'llvm')
 llvm_bin_directory = os.path.join(llvm_directory, 'bin')
-llvm_src_directory = os.path.join(llvm_directory, f'{llvm_version}.src')
-llvm_task = download_extract_task(ExtractBuildTask,
-    f'https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.6/{llvm_version}-win64.exe',
-    f'{llvm_version}-win64.exe',
-    llvm_directory,
-    force=not os.path.exists(llvm_directory))
-llvm_bin_task = download_extract_task(ExtractTarfileBuildTask,
-    f'https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.6/{llvm_version}.src.tar.xz',
-    f'{llvm_version}.src.tar.xz',
-    llvm_directory,
-    force=not os.path.exists(llvm_src_directory))
+
+
 
 busybox_task = DownloadBuildTask(
     'https://frippery.org/files/busybox/busybox64.exe', 

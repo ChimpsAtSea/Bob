@@ -347,7 +347,7 @@ thirdparty/ninja/ninja_build/
 thirdparty/EWDK/
 thirdparty/ffmpeg/ffmpeg_build_*/
 thirdparty/musl/
-thirdparty/llvm/
+thirdparty/llvm/llvm-build/
 thirdparty/msys2/
 thirdparty/python/
 thirdparty/wasi/
