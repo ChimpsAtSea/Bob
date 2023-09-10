@@ -7,8 +7,26 @@ declare_args() {
   bob_third_party_dir = "//bob/thirdparty"
   bob_download_cache_dir = "//bob/downloadcache"
   bob_ewdk_dir = "//bob/thirdparty/EWDK"
+  llvm_dir = ""
+  llvm_src_dir = ""
+  llvm_bin_dir = ""
+  llvm_clang = ""
+  llvm_ar = ""
+  llvm_ld = ""
+  llvm_lld_link = ""
+  llvm_wasm_ld = ""
+  llvm_ld_lld = ""
   tag_configuration_triplets_concat = ""
 }
+
+not_needed([ 
+  "llvm_dir_dir",
+  "llvm_src_dir",
+  "llvm_bin_dir",
+  "llvm_clang",
+  "llvm_ar",
+  "llvm_ld",
+  "llvm_lld_link" ])
 
 tag_configuration_triplets = []
 tag_configuration_defines = []

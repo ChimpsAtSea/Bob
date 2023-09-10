@@ -231,6 +231,19 @@ def _get_thirdparty_executable_exists(directory, filename):
         raise Exception(f'Requested thirdparty filepath doesn\'t exist', filepath, directory, filename)
     return filepath
 
+def get_llvm_clang():
+    return _get_thirdparty_executable_exists(get_llvm_bin_dir(), f'clang{host_executable_suffix}')
+def get_llvm_ar():
+    return _get_thirdparty_executable_exists(get_llvm_bin_dir(), f'llvm-ar{host_executable_suffix}')
+def get_llvm_ld():
+    return _get_thirdparty_executable_exists(get_llvm_bin_dir(), f'lld{host_executable_suffix}')
+def get_llvm_lld_link():
+    return _get_thirdparty_executable_exists(get_llvm_bin_dir(), f'lld-link{host_executable_suffix}')
+def get_llvm_wasm_ld():
+    return _get_thirdparty_executable_exists(get_llvm_bin_dir(), f'wasm-ld{host_executable_suffix}')
+def get_llvm_ld_lld():
+    return _get_thirdparty_executable_exists(get_llvm_bin_dir(), f'ld.lld{host_executable_suffix}')
+
 def get_gn():
     return _get_thirdparty_executable_exists(get_gn_dir(), f'gn{host_executable_suffix}')
 def get_ninja():

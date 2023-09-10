@@ -615,17 +615,30 @@ def write_cpp_project_filters(solution : Solution, project : Project):
         description = description_and_osplatformconfig.description
         for source in description.sources:
             sources.add(source)
-            filters.add(get_project_file_filter(source))
+            filter = get_project_file_filter(source)
+            filter = filter.replace("/", "\\")
+            filters.add(filter)
+    
+    _filters = set[str]()
+    for filter in filters:
+        filter_parent = ''
+        for filter_part in filter.split('\\'):
+            if not filter_parent:
+                filter_parent = filter_part
+            else:
+                filter_parent += f'\\{filter_part}'
+            _filters.add(filter_parent)
+    filters = filters | _filters
+
     filters = sorted(filters)
     sources = sorted(sources)
-    
+
     lines = []
     lines.append('<?xml version="1.0" encoding="utf-8"?>')
     lines.append('<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">')
     lines.append('  <ItemGroup>')
     for filter in filters:
         if filter:
-            filter = filter.replace("/", "\\")
             lines.append(f'    <Filter Include="{filter}">')
             lines.append(f'      <UniqueIdentifier>{{{str(create_guid("filter-", filter)).upper()}}}</UniqueIdentifier>')
             lines.append(f'    </Filter>')

@@ -1,16 +1,14 @@
-llvm_bin = rebase_path(bob_third_party_dir + "/llvm/bin")
-clang = string_join("/", [llvm_bin, "clang"])
-ar = string_join("/", [llvm_bin, "llvm-ar"])
-ld = string_join("/", [llvm_bin, "lld"])
-not_needed([ 
-  "ld", 
-  "ar" ])
 
 busybox = ""
 if(is_host_windows)
 {
   busybox = rebase_path(bob_third_party_dir + "/busybox/busybox64.exe")
 }
+
+ld = llvm_ld
+clang = llvm_clang
+ar = llvm_ar
+not_needed(["ld", "clang", "ar"])
 
 object_extension = ""
 static_library_extension = ""
@@ -26,7 +24,8 @@ if(is_target_windows)
   
   lib_switch = "/defaultlib:"
   lib_dir_switch = "/libpath:"
-  ld = string_join("/", [llvm_bin, "lld-link"])
+
+  ld = llvm_lld_link # string_join("/", [llvm_bin, "lld-link"])
 } 
 else if(is_target_webassembly)
 {
@@ -35,7 +34,7 @@ else if(is_target_webassembly)
   shared_library_extension = ""
   executable_extension = ".wasm"
   
-  ld = string_join("/", [llvm_bin, "wasm-ld"])
+  ld = llvm_wasm_ld # string_join("/", [llvm_bin, "wasm-ld"])
 } 
 else if(is_target_linux)
 {
@@ -44,7 +43,7 @@ else if(is_target_linux)
   shared_library_extension = ".so"
   executable_extension = ""
   
-  ld = string_join("/", [llvm_bin, "ld.lld"])
+  ld = llvm_ld_lld # string_join("/", [llvm_bin, "ld.lld"])
 }
 
 not_needed([ 
