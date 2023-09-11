@@ -8,6 +8,8 @@ declare_args() {
   bob_third_party_dir = "//bob/thirdparty"
   bob_download_cache_dir = "//bob/downloadcache"
   bob_ewdk_dir = "//bob/thirdparty/EWDK"
+  bob_clang_frontend = ""
+  bob_clang_flags = ""
 
   llvm_root_dir = ""
   llvm_project_dir = ""

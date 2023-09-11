@@ -154,13 +154,20 @@ class Project:
     def get_guid(self):
         return str(self.guid).upper()
 
+    def get_project_directory(self):
+        project_directory = os.path.join(os.path.dirname(self.solution.filepath), '')
+        return project_directory
+
     def get_project_filepath(self):
-        project_extension = "vcxproj"
         description = self.descriptions[0].description
+
+        project_extension = "vcxproj"
         if description.custom_target_type == "python_library":
             project_extension = "pyproj"
-        #print(description.custom_target_type)
-        project_filepath = os.path.join(os.path.dirname(self.solution.filepath), f'{description.target.name}.{project_extension}')
+
+        project_directory = self.get_project_directory()
+        project_filepath = os.path.join(project_directory, f'{description.target.name}.{project_extension}')
+        
         return project_filepath
 
     def get_project_filters_filepath(self):
@@ -169,7 +176,7 @@ class Project:
     def get_project_user_filepath(self):
         return self.get_project_filepath() + ".user"
     
-    def get_description(self, osplatformconfig):
+    def get_description(self, osplatformconfig) -> DescriptionAndOSPlatformConfiguration:
         for description in self.descriptions:
             if description.osplatformconfig == osplatformconfig:
                 return description.description
@@ -411,9 +418,9 @@ def write_python_project(solution : Solution, project : Project):
     for file in project.get_aggregate_inputs():
         write_python_project_file(lines, project, file)
     for file in project.descriptions[0].description.target.buildfiles:
-        write_project_file(lines, project, file)
+        write_project_file_gn(lines, project, file)
     if project.descriptions[0].description.script:
-        write_project_file(lines, project, project.descriptions[0].description.script)
+        write_project_file_gn(lines, project, project.descriptions[0].description.script)
     lines.append(f'  </ItemGroup>')
     lines.append(f'  <Import Project="$(MSBuildExtensionsPath32)\\Microsoft\\VisualStudio\\v$(VisualStudioVersion)\\Python Tools\\Microsoft.PythonTools.targets" />')
     lines.append('  <Target Name="CoreCompile" />')
@@ -424,9 +431,8 @@ def write_python_project(solution : Solution, project : Project):
     if util.write_file_if_changed(project_filepath, lines):
         print(project_filepath, "changed")
 
-def write_project_file(lines : list[str], project : Project, file : str):
+def write_project_file(lines : list[str], project : Project, file_absolute_path : str):
     project_filepath = project.get_project_filepath()
-    file_absolute_path = gn.system_path(util.get_project_root_dir(), file)
     solution_absolute_path = os.path.join(util.get_project_root_dir(), project_filepath)
     solution_absolute_directory = os.path.dirname(solution_absolute_path)
     file_relative_path = os.path.relpath(file_absolute_path, solution_absolute_directory)
@@ -441,6 +447,10 @@ def write_project_file(lines : list[str], project : Project, file : str):
         lines.append(f'    <ClCompile Include="{html.escape(file_relative_path)}" />')
     else:
         lines.append(f'    <None Include="{html.escape(file_relative_path)}" />')
+
+def write_project_file_gn(lines : list[str], project : Project, file : str):
+    file_absolute_path = gn.system_path(util.get_project_root_dir(), file)
+    return write_project_file(lines, project, file_absolute_path)
 
 def write_cpp_project(solution : Solution, project : Project):
     lines = list[str]()
@@ -557,13 +567,19 @@ def write_cpp_project(solution : Solution, project : Project):
         lines.append(f'  <!-- {osplatformconfig.vs_triplet} Sources -->')
         lines.append(f'  <ItemGroup Condition="\'$(Configuration)|$(Platform)\'==\'{osplatformconfig.vs_triplet}\'">')
         for source in description.sources:
-            write_project_file(lines, project, source)
+            write_project_file_gn(lines, project, source)
         for input in description.inputs:
             if input.lower().endswith(('.natvis', '.py')):
-                write_project_file(lines, project, input)
-        write_project_file(lines, project, description.target.buildfile)
+                write_project_file_gn(lines, project, input)
+        write_project_file_gn(lines, project, description.target.buildfile)
+
+        #TODO: When a universal build file is finished, add it to the project structure
+        #buildfile_absolute_path = os.path.join(util.get_project_root_dir(), project.get_project_directory(), 'build.ninja')
+        #print(description)
+        #write_project_file_gn(lines, project, description.target.buildfile)
+
         if project.descriptions[0].description.script:
-            write_project_file(lines, project, project.descriptions[0].description.script)
+            write_project_file_gn(lines, project, project.descriptions[0].description.script)
         lines.append(f'  </ItemGroup>')
     lines.append(f'  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />')
     lines.append(f'  <ImportGroup Label="ExtensionTargets" />')

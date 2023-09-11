@@ -34,5 +34,6 @@ class NinjaBuildTask(VisualCPPBuildTask):
             os.makedirs(build_directory)
 
         python = util.get_python()
-        process = subprocess.Popen([python, os.path.join(source_directory, 'configure.py'), '--bootstrap'], env=self.environment, cwd=build_directory)
+        args = [python, os.path.join(source_directory, 'configure.py'), '--bootstrap']
+        process = subprocess.Popen(args, env=self.environment, cwd=build_directory)
         process.wait()

@@ -369,7 +369,8 @@ toolchain("clang")
 
   tool("cc") {
     depfile = "{{output}}.d"
-    command = clang + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
+    print(bob_clang_frontend + " " + clang + " " + bob_clang_flags)
+    command = bob_clang_frontend + " " + clang + " " + bob_clang_flags + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
     description = "(CC {{output}}) $command"
     outputs = [ "{{target_out_dir}}/{{target_output_name}}.{{source_name_part}}$object_extension" ]
     depsformat = "gcc"
@@ -381,7 +382,7 @@ toolchain("clang")
 
   tool("cxx") {
     depfile = "{{output}}.d"
-    command = clang + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
+    command = bob_clang_frontend + " " + clang + " " + bob_clang_flags + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
     description = "(CXX {{output}}) $command"
     outputs = [ "{{target_out_dir}}/{{target_output_name}}.{{source_name_part}}$object_extension" ]
     depsformat = "gcc"

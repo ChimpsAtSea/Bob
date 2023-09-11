@@ -130,22 +130,24 @@ template("bob_resources") {
     inputs += [ ]
     
     # BCS Environment
+
     args += [
-      "--bob_root_dir", rebase_path(bob_root_dir),
-      "--bob_third_party_dir", rebase_path(bob_third_party_dir),
-      "--bob_7z_dir", rebase_path(bob_7z_dir),
-      "--bob_ewdk_dir", rebase_path(bob_ewdk_dir),
-      "--bob_download_cache_dir", rebase_path(bob_download_cache_dir),
-      "--target_os", target_os,
-      "--target_config", target_config,
-      "--target_link_config", target_link_config,
-      "--target_cpu", target_cpu,
-      "--target_src_dir", rebase_path("."),
-      "--target_gen_dir", rebase_path(target_gen_dir),
-      "--target_out_dir", rebase_path(target_out_dir),
-      "--root_out_dir", rebase_path(root_out_dir),
-      "--root_gen_dir", rebase_path(root_gen_dir),
-      "--root_build_dir", rebase_path(root_build_dir) ]
+      "--bob-root-dir", rebase_path(bob_root_dir),
+      "--bob-third-party-dir", rebase_path(bob_third_party_dir),
+      "--bob-ewdk-dir", rebase_path(bob_ewdk_dir),
+      "--bob-download-cache-dir", rebase_path(bob_download_cache_dir),
+      "--bob-clang-frontend", rebase_path(bob_clang_frontend),
+      "--bob-clang-flags", rebase_path(bob_clang_flags),
+      "--target-os", target_os,
+      "--target-config", target_config,
+      "--target-link-config", target_link_config,
+      "--target-cpu", target_cpu,
+      "--target-src-dir", rebase_path("."),
+      "--target-gen-dir", rebase_path(target_gen_dir),
+      "--target-out-dir", rebase_path(target_out_dir),
+      "--root-out_dir", rebase_path(root_out_dir),
+      "--root-gen_dir", rebase_path(root_gen_dir),
+      "--root-build_dir", rebase_path(root_build_dir) ]
 
     # Note that we have to manually pass the sources to our script if the
     # script needs them as inputs.

@@ -6,6 +6,7 @@ from task_manager import VisualCPPBuildTask
 import library_util as util
 import library_project_setup as project_setup
 import pathlib
+import multiprocessing
 
 class LLVMBuildTask(VisualCPPBuildTask):
     def __init__(self, target_config : str, _parent_tasks = []):
@@ -115,10 +116,18 @@ class LLVMBuildTask(VisualCPPBuildTask):
             #NOTE: We do this because there is very little speed advantage
             # to using hyperthreading to build LLVM and it cuts the ram
             # usage in half
-            restricted_thread_count = util.get_restricted_thread_count()
-            print(f"Using {restricted_thread_count} threads")
+            thread_count = multiprocessing.cpu_count()
+            if util.bob_prebuild_use_lto:
+                thread_count = util.get_restricted_thread_count()
+                print(f"Using {thread_count} threads")
 
-            ninja_args = [ninja, '-C', self.build_directory, '-j', str(restricted_thread_count)]
+            ninja_args = [
+                ninja,
+                '-C', self.build_directory,
+                '-j', str(thread_count),
+                'clang',
+                'llvm-ar',
+                'lld' ]
             process = subprocess.Popen(ninja_args, env=self.environment)
             process.wait()
             if process.returncode:

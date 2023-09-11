@@ -40,6 +40,7 @@ parser.add_dir_argument('--bob-thirdparty-directory', required=True)
 parser.add_dir_argument('--bob-project-root-directory', required=True)
 parser.add_argument('--bob-solution-pretty-name')
 parser.add_argument('--bob-solution-namespace')
+parser.add_argument('--bob-use-clang-frontend')
 
 parser.add_argument('--bob-build-arch', type=str, choices=['x86', 'x64', 'arm', 'arm64', 'webassembly'])
 parser.add_argument('--bob-build-target', type=str, choices=['all', 'windows', 'linux', 'webassembly'])
@@ -90,6 +91,7 @@ def parse_argument_bool(argument : str):
 
 debug = parse_argument_bool(get_argument('debug', 'false'))
 bob_prebuild_use_lto = parse_argument_bool(get_argument('bob_prebuild_use_lto', 'false'))
+bob_use_clang_frontend = parse_argument_bool(get_argument('bob_use_clang_frontend', 'false'))
 
 
 def dprint(*args):

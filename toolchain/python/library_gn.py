@@ -315,6 +315,10 @@ def _generate_build_configuration_files_command(target_os: str, target_config: s
     gn_args.append(f'bob_download_cache_dir="{util.get_download_cache_dir()}"')
     gn_args.append(f'bob_ewdk_dir="{util.get_ewdk_dir()}"')
 
+    if util.bob_use_clang_frontend:
+        gn_args.append(f'bob_clang_frontend="thread_frontend:ninja_frontend E:\\GitHub\\CustomFrontend\\CustomFrontend.dll"')
+        gn_args.append(f'bob_clang_flags="-no-canonical-prefixes"')
+
     gn_args.append(f'llvm_root_dir="{util.get_llvm_root_dir()}"')
     gn_args.append(f'llvm_project_dir="{util.get_llvm_project_dir()}"')
     gn_args.append(f'llvm_build_dir="{util.get_llvm_build_dir()}"')
