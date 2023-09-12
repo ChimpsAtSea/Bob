@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{c8ec67d3-9f40-4b24-8f87-992c6d412033}</ProjectGuid>
+    <RootNamespace>clang_frontend</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>$(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_$(Configuration.toLower())_x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)llvm\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-project\clang\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-project\llvm\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_$(Configuration.toLower())_x64\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_$(Configuration.toLower())_x64\tools\clang\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-project\llvm\lib\Support</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>$(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_$(Configuration.toLower())_x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)llvm\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-project\clang\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-project\llvm\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_$(Configuration.toLower())_x64\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_$(Configuration.toLower())_x64\tools\clang\include;$(SolutionDir)..\..\thirdparty\llvm\llvm-project\llvm\lib\Support</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;_SILENCE_ALL_CXX20_DEPRECATION_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <DisableSpecificWarnings>4146;4244;4267;4291;4319;4805;4624;4703;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>clangToolingInclusions.lib;clangAnalysis.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangCodeGen.lib;clangDriver.lib;clangEdit.lib;clangExtractAPI.lib;clangFormat.lib;clangFrontend.lib;clangIndex.lib;clangLex.lib;clangParse.lib;clangRewrite.lib;clangRewriteFrontend.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangToolingCore.lib;LLVMWindowsManifest.lib;LLVMX86AsmParser.lib;LLVMX86CodeGen.lib;LLVMX86Desc.lib;LLVMX86Disassembler.lib;LLVMX86Info.lib;LLVMXCoreCodeGen.lib;LLVMXCoreDesc.lib;LLVMXCoreDisassembler.lib;LLVMXCoreInfo.lib;LLVMAArch64AsmParser.lib;LLVMAArch64CodeGen.lib;LLVMAArch64Desc.lib;LLVMAArch64Disassembler.lib;LLVMAArch64Info.lib;LLVMAArch64Utils.lib;LLVMAggressiveInstCombine.lib;LLVMAMDGPUAsmParser.lib;LLVMAMDGPUCodeGen.lib;LLVMAMDGPUDesc.lib;LLVMAMDGPUDisassembler.lib;LLVMAMDGPUInfo.lib;LLVMAMDGPUUtils.lib;LLVMAnalysis.lib;LLVMARMAsmParser.lib;LLVMARMCodeGen.lib;LLVMARMDesc.lib;LLVMARMDisassembler.lib;LLVMARMInfo.lib;LLVMARMUtils.lib;LLVMAsmParser.lib;LLVMAsmPrinter.lib;LLVMAVRAsmParser.lib;LLVMAVRCodeGen.lib;LLVMAVRDesc.lib;LLVMAVRDisassembler.lib;LLVMAVRInfo.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMBitWriter.lib;LLVMBPFAsmParser.lib;LLVMBPFCodeGen.lib;LLVMBPFDesc.lib;LLVMBPFDisassembler.lib;LLVMBPFInfo.lib;LLVMCFGuard.lib;LLVMCodeGen.lib;LLVMCore.lib;LLVMCoroutines.lib;LLVMCoverage.lib;LLVMDebugInfoCodeView.lib;LLVMDebugInfoDWARF.lib;LLVMDebugInfoMSF.lib;LLVMDebugInfoPDB.lib;LLVMDemangle.lib;LLVMDlltoolDriver.lib;LLVMExtensions.lib;LLVMFrontendHLSL.lib;LLVMFrontendOpenMP.lib;LLVMGlobalISel.lib;LLVMHexagonAsmParser.lib;LLVMHexagonCodeGen.lib;LLVMHexagonDesc.lib;LLVMHexagonDisassembler.lib;LLVMHexagonInfo.lib;LLVMInstCombine.lib;LLVMInstrumentation.lib;LLVMipo.lib;LLVMIRPrinter.lib;LLVMIRReader.lib;LLVMLanaiAsmParser.lib;LLVMLanaiCodeGen.lib;LLVMLanaiDesc.lib;LLVMLanaiDisassembler.lib;LLVMLanaiInfo.lib;LLVMLibDriver.lib;LLVMLinker.lib;LLVMLoongArchAsmParser.lib;LLVMLoongArchCodeGen.lib;LLVMLoongArchDesc.lib;LLVMLoongArchDisassembler.lib;LLVMLoongArchInfo.lib;LLVMLTO.lib;LLVMMC.lib;LLVMMCDisassembler.lib;LLVMMCParser.lib;LLVMMipsAsmParser.lib;LLVMMipsCodeGen.lib;LLVMMipsDesc.lib;LLVMMipsDisassembler.lib;LLVMMipsInfo.lib;LLVMMIRParser.lib;LLVMMSP430AsmParser.lib;LLVMMSP430CodeGen.lib;LLVMMSP430Desc.lib;LLVMMSP430Disassembler.lib;LLVMMSP430Info.lib;LLVMNVPTXCodeGen.lib;LLVMNVPTXDesc.lib;LLVMNVPTXInfo.lib;LLVMObjCARCOpts.lib;LLVMObject.lib;LLVMOption.lib;LLVMPasses.lib;LLVMPowerPCAsmParser.lib;LLVMPowerPCCodeGen.lib;LLVMPowerPCDesc.lib;LLVMPowerPCDisassembler.lib;LLVMPowerPCInfo.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMRISCVAsmParser.lib;LLVMRISCVCodeGen.lib;LLVMRISCVDesc.lib;LLVMRISCVDisassembler.lib;LLVMRISCVInfo.lib;LLVMScalarOpts.lib;LLVMSelectionDAG.lib;LLVMSparcAsmParser.lib;LLVMSparcCodeGen.lib;LLVMSparcDesc.lib;LLVMSparcDisassembler.lib;LLVMSparcInfo.lib;LLVMSymbolize.lib;LLVMSystemZAsmParser.lib;LLVMSystemZCodeGen.lib;LLVMSystemZDesc.lib;LLVMSystemZDisassembler.lib;LLVMSystemZInfo.lib;LLVMTableGen.lib;LLVMTableGenGlobalISel.lib;LLVMTarget.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMVEAsmParser.lib;LLVMVECodeGen.lib;LLVMVectorize.lib;LLVMVEDesc.lib;LLVMVEDisassembler.lib;LLVMVEInfo.lib;LLVMWebAssemblyAsmParser.lib;LLVMWebAssemblyCodeGen.lib;LLVMWebAssemblyDesc.lib;LLVMWebAssemblyDisassembler.lib;LLVMWebAssemblyInfo.lib;LLVMWebAssemblyUtils.lib;LLVMWindowsDriver.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <FixedBaseAddress>true</FixedBaseAddress>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /D /Y $(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_release_x64\bin\*.dll $(OutDir)
+rem xcopy /D /Y $(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_release_x64\bin\*.dll $(ProjectDir)
+rem xcopy /D /Y $(TargetPath) $(ProjectDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;_SILENCE_ALL_CXX20_DEPRECATION_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4146;4244;4267;4291;4319;4805;4624;4703;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>clangToolingInclusions.lib;clangAnalysis.lib;clangAST.lib;clangASTMatchers.lib;clangBasic.lib;clangCodeGen.lib;clangDriver.lib;clangEdit.lib;clangExtractAPI.lib;clangFormat.lib;clangFrontend.lib;clangIndex.lib;clangLex.lib;clangParse.lib;clangRewrite.lib;clangRewriteFrontend.lib;clangSema.lib;clangSerialization.lib;clangSupport.lib;clangToolingCore.lib;LLVMWindowsManifest.lib;LLVMX86AsmParser.lib;LLVMX86CodeGen.lib;LLVMX86Desc.lib;LLVMX86Disassembler.lib;LLVMX86Info.lib;LLVMXCoreCodeGen.lib;LLVMXCoreDesc.lib;LLVMXCoreDisassembler.lib;LLVMXCoreInfo.lib;LLVMAArch64AsmParser.lib;LLVMAArch64CodeGen.lib;LLVMAArch64Desc.lib;LLVMAArch64Disassembler.lib;LLVMAArch64Info.lib;LLVMAArch64Utils.lib;LLVMAggressiveInstCombine.lib;LLVMAMDGPUAsmParser.lib;LLVMAMDGPUCodeGen.lib;LLVMAMDGPUDesc.lib;LLVMAMDGPUDisassembler.lib;LLVMAMDGPUInfo.lib;LLVMAMDGPUUtils.lib;LLVMAnalysis.lib;LLVMARMAsmParser.lib;LLVMARMCodeGen.lib;LLVMARMDesc.lib;LLVMARMDisassembler.lib;LLVMARMInfo.lib;LLVMARMUtils.lib;LLVMAsmParser.lib;LLVMAsmPrinter.lib;LLVMAVRAsmParser.lib;LLVMAVRCodeGen.lib;LLVMAVRDesc.lib;LLVMAVRDisassembler.lib;LLVMAVRInfo.lib;LLVMBinaryFormat.lib;LLVMBitReader.lib;LLVMBitstreamReader.lib;LLVMBitWriter.lib;LLVMBPFAsmParser.lib;LLVMBPFCodeGen.lib;LLVMBPFDesc.lib;LLVMBPFDisassembler.lib;LLVMBPFInfo.lib;LLVMCFGuard.lib;LLVMCodeGen.lib;LLVMCore.lib;LLVMCoroutines.lib;LLVMCoverage.lib;LLVMDebugInfoCodeView.lib;LLVMDebugInfoDWARF.lib;LLVMDebugInfoMSF.lib;LLVMDebugInfoPDB.lib;LLVMDemangle.lib;LLVMDlltoolDriver.lib;LLVMExtensions.lib;LLVMFrontendHLSL.lib;LLVMFrontendOpenMP.lib;LLVMGlobalISel.lib;LLVMHexagonAsmParser.lib;LLVMHexagonCodeGen.lib;LLVMHexagonDesc.lib;LLVMHexagonDisassembler.lib;LLVMHexagonInfo.lib;LLVMInstCombine.lib;LLVMInstrumentation.lib;LLVMipo.lib;LLVMIRPrinter.lib;LLVMIRReader.lib;LLVMLanaiAsmParser.lib;LLVMLanaiCodeGen.lib;LLVMLanaiDesc.lib;LLVMLanaiDisassembler.lib;LLVMLanaiInfo.lib;LLVMLibDriver.lib;LLVMLinker.lib;LLVMLoongArchAsmParser.lib;LLVMLoongArchCodeGen.lib;LLVMLoongArchDesc.lib;LLVMLoongArchDisassembler.lib;LLVMLoongArchInfo.lib;LLVMLTO.lib;LLVMMC.lib;LLVMMCDisassembler.lib;LLVMMCParser.lib;LLVMMipsAsmParser.lib;LLVMMipsCodeGen.lib;LLVMMipsDesc.lib;LLVMMipsDisassembler.lib;LLVMMipsInfo.lib;LLVMMIRParser.lib;LLVMMSP430AsmParser.lib;LLVMMSP430CodeGen.lib;LLVMMSP430Desc.lib;LLVMMSP430Disassembler.lib;LLVMMSP430Info.lib;LLVMNVPTXCodeGen.lib;LLVMNVPTXDesc.lib;LLVMNVPTXInfo.lib;LLVMObjCARCOpts.lib;LLVMObject.lib;LLVMOption.lib;LLVMPasses.lib;LLVMPowerPCAsmParser.lib;LLVMPowerPCCodeGen.lib;LLVMPowerPCDesc.lib;LLVMPowerPCDisassembler.lib;LLVMPowerPCInfo.lib;LLVMProfileData.lib;LLVMRemarks.lib;LLVMRISCVAsmParser.lib;LLVMRISCVCodeGen.lib;LLVMRISCVDesc.lib;LLVMRISCVDisassembler.lib;LLVMRISCVInfo.lib;LLVMScalarOpts.lib;LLVMSelectionDAG.lib;LLVMSparcAsmParser.lib;LLVMSparcCodeGen.lib;LLVMSparcDesc.lib;LLVMSparcDisassembler.lib;LLVMSparcInfo.lib;LLVMSymbolize.lib;LLVMSystemZAsmParser.lib;LLVMSystemZCodeGen.lib;LLVMSystemZDesc.lib;LLVMSystemZDisassembler.lib;LLVMSystemZInfo.lib;LLVMTableGen.lib;LLVMTableGenGlobalISel.lib;LLVMTarget.lib;LLVMTargetParser.lib;LLVMTextAPI.lib;LLVMTransformUtils.lib;LLVMVEAsmParser.lib;LLVMVECodeGen.lib;LLVMVectorize.lib;LLVMVEDesc.lib;LLVMVEDisassembler.lib;LLVMVEInfo.lib;LLVMWebAssemblyAsmParser.lib;LLVMWebAssemblyCodeGen.lib;LLVMWebAssemblyDesc.lib;LLVMWebAssemblyDisassembler.lib;LLVMWebAssemblyInfo.lib;LLVMWebAssemblyUtils.lib;LLVMWindowsDriver.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <FixedBaseAddress>true</FixedBaseAddress>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /D /Y $(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_release_x64\bin\*.dll $(OutDir)
+rem xcopy /D /Y $(SolutionDir)..\..\thirdparty\llvm\llvm-build\llvm_build_release_x64\bin\*.dll $(ProjectDir)
+rem xcopy /D /Y $(TargetPath) $(ProjectDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ABIBreak.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\AddressRanges.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Allocator.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\AMDGPUMetadata.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\APFixedPoint.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\APFloat.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\APInt.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\APSInt.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ARMAttributeParser.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ARMBuildAttrs.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ARMWinEH.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Atomic.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\AutoConvert.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Base64.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BinaryStreamError.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BinaryStreamReader.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BinaryStreamRef.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BinaryStreamWriter.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_avx2.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_avx512.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_dispatch.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_neon.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_portable.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_sse2.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_sse41.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BlockFrequency.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BranchProbability.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BuryPointer.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\CachePruning.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Caching.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Chrono.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\circular_raw_ostream.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\CodeGenCoverage.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\COM.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Compression.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ConvertUTF.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ConvertUTFWrapper.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\CrashRecoveryContext.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\CRC.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\CSKYAttributeParser.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\CSKYAttributes.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\DAGDeltaAlgorithm.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\DataExtractor.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Debug.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\DebugCounter.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\DeltaAlgorithm.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\DivisionByConstantInfo.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\DJB.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\DynamicLibrary.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ELFAttributeParser.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ELFAttributes.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Errno.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Error.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ErrorHandling.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ExtensibleRTTI.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\FileCollector.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\FileOutputBuffer.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\FileUtilities.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\FoldingSet.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\FormattedStream.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\FormatVariadic.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\GlobPattern.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\GraphWriter.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Hashing.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\InitLLVM.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\InstructionCost.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\IntEqClasses.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\IntervalMap.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ItaniumManglingCanonicalizer.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\JSON.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\KnownBits.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\LEB128.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\LineIterator.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Locale.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\LockFileManager.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\LowLevelType.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ManagedStatic.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\MathExtras.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\MD5.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\MemAlloc.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Memory.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\MemoryBuffer.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\MemoryBufferRef.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\MSP430AttributeParser.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\MSP430Attributes.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\NativeFormatting.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\OptimizedStructLayout.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Optional.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Parallel.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Path.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\PluginLoader.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\PrettyStackTrace.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Process.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Program.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\RandomNumberGenerator.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\raw_ostream.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\raw_os_ostream.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regcomp.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regerror.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Regex.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regexec.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regfree.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regstrlcpy.c" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\RISCVAttributeParser.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\RISCVAttributes.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\RISCVISAInfo.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\RWMutex.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ScaledNumber.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ScopedPrinter.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SHA1.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SHA256.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Signals.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Signposts.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SmallPtrSet.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SmallVector.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SourceMgr.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SpecialCaseList.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Statistic.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\StringExtras.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\StringMap.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\StringRef.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\StringSaver.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SuffixTree.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SymbolRemappingReader.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\SystemUtils.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\TarWriter.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Threading.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ThreadPool.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\TimeProfiler.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Timer.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\ToolOutputFile.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\TrigramIndex.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Twine.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Unicode.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\UnicodeCaseFold.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\UnicodeNameToCodepoint.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\UnicodeNameToCodepointGenerated.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Valgrind.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\VersionTuple.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\VirtualFileSystem.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Watchdog.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\WithColor.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\xxhash.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\YAMLParser.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\YAMLTraits.cpp" />
+    <ClCompile Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Z3Solver.cpp" />
+    <ClCompile Include="clang\lib\FrontendTool\ExecuteCompilerInvocation.cpp" />
+    <ClCompile Include="clang\tools\driver\cc1as_main.cpp" />
+    <ClCompile Include="clang\tools\driver\cc1gen_reproducer_main.cpp" />
+    <ClCompile Include="clang\tools\driver\cc1_main.cpp" />
+    <ClCompile Include="clang\tools\driver\driver.cpp" />
+    <ClCompile Include="llvm\lib\Support\CommandLine.cpp" />
+    <ClCompile Include="llvm\lib\Support\TypeSize.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\CMakeLists.txt" />
+    <Text Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\.clang-format" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_avx2_x86-64_unix.S" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_avx2_x86-64_windows_gnu.S" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_avx2_x86-64_windows_msvc.asm" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_avx512_x86-64_unix.S" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_avx512_x86-64_windows_gnu.S" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_avx512_x86-64_windows_msvc.asm" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_sse2_x86-64_unix.S" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_sse2_x86-64_windows_gnu.S" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_sse2_x86-64_windows_msvc.asm" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_sse41_x86-64_unix.S" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_sse41_x86-64_windows_gnu.S" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_sse41_x86-64_windows_msvc.asm" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\LICENSE" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\README.md" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\COPYRIGHT.regex" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regengine.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\COM.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\DynamicLibrary.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\explicit_symbols.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\Memory.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\Path.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\Process.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\Program.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\Signals.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\Threading.inc" />
+    <None Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\Windows\Watchdog.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\blake3_impl.h" />
+    <ClInclude Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\BLAKE3\llvm_blake3_prefix.h" />
+    <ClInclude Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\DebugOptions.h" />
+    <ClInclude Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regex2.h" />
+    <ClInclude Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regex_impl.h" />
+    <ClInclude Include="..\..\thirdparty\llvm\llvm-project\llvm\lib\Support\regutils.h" />
+    <ClInclude Include="llvm\include\llvm\Support\CommandLine.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
