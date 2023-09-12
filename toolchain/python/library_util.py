@@ -50,6 +50,8 @@ parser.add_argument('--bob-prebuild-force', type=str)
 parser.add_argument('--bob-prebuild-max-threads', type=int)
 parser.add_argument('--bob-prebuild-use-lto', type=str)
 
+parser.add_argument('--llvm-build-configs', type=str)
+
 parser.add_argument('--gn-target-os', type=str)
 parser.add_argument('--gn-target-config', type=str)
 parser.add_argument('--gn-target-link-config', type=str)
@@ -78,7 +80,7 @@ parser.add_argument('--debug', type=str)
 
 args, unknown = parser.parse_known_args()
 
-def get_argument(argument_name : str, default = None):
+def get_argument(argument_name : str, default = None) -> str:
     argument = getattr(args, argument_name, default)
     if (default is None) and (argument is None):
         raise Exception(f'{argument_name} was not found')
@@ -207,6 +209,19 @@ def _get_thirdparty_subdir(name, subdirectory, subpath):
 
 #TODO: Programatically get these rather than hard code them
 
+def _parse_string_array_argument(argument_name):
+    argument_str = get_argument(argument_name, '')
+    if not argument_str:
+        return []
+    argument = argument_str.split(';')
+    argument = [a for a in argument if a] # filter
+    return argument
+
+def get_llvm_build_configs():
+    return _parse_string_array_argument('llvm_build_configs')
+def get_force_rebuild_names() -> list[str]:
+    return _parse_string_array_argument('bob_prebuild_force')
+
 def get_llvm_root_dir(subpath : str = None):
     return _get_thirdparty_subdir('llvm', 'llvm', subpath)
 def get_llvm_project_dir(subpath : str = None):
@@ -273,10 +288,6 @@ def get_cmake():
     return _get_thirdparty_executable_exists(get_cmake_dir(), f'cmake{host_executable_suffix}')
 def get_7z():
     return _get_thirdparty_executable_exists(get_7z_dir(), f'7z{host_executable_suffix}')
-
-def get_force_rebuild_names() -> list[str]:
-    force_rebuild_names = get_argument('bob_prebuild_force', '').split(';')
-    return force_rebuild_names
 
 def force_ninja_rebuild():
     force_rebuild_names = get_force_rebuild_names()

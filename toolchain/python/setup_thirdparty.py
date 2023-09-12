@@ -62,7 +62,9 @@ ewdk_task = download_extract_task(ExtractBuildTask,
 
 #llvm_debug_task = LLVMBuildTask('debug', llvm_version, [llvm_prebuilt_task, llvm_src_task])
 #llvm_release_task = LLVMBuildTask('release', llvm_version, [llvm_prebuilt_task, llvm_src_task])
-llvm_task = LLVMBuildTask('release', [])
+
+llvm_configs = util.get_llvm_build_configs() or ['release']
+llvm_tasks = [LLVMBuildTask(config, []) for config in llvm_configs]
 
 llvm_directory = os.path.join(util.get_thirdparty_dir(), 'llvm')
 llvm_bin_directory = os.path.join(llvm_directory, 'bin')
