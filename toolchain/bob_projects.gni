@@ -65,8 +65,39 @@ template("bob_shared_library")
   }
 }
 
+bob_executable_config = get_path_info(":submodule_windows_ldconfig", "abspath")
 template("bob_executable")
 {
+  if(!defined(invoker.include_dirs)) {
+    invoker.include_dirs = extra_include_dirs
+  } else {
+    invoker.include_dirs += extra_include_dirs
+  }
+
+  if(!defined(invoker.defines)) {
+    invoker.defines = tag_configuration_defines
+  } else {
+    invoker.defines += tag_configuration_defines
+  }
+
+  if(!defined(invoker.configs)) {
+    invoker.configs = configs
+  } else {
+    invoker.configs += configs
+  }
+  
+  executable(target_name)
+  {
+    configs += [ bob_executable_config ]
+    metadata = {}
+    forward_variables_from(invoker, "*")
+  }
+}
+
+bob_console_config = get_path_info(":submodule_console_ldconfig", "abspath")
+template("bob_console")
+{
+
   if(!defined(invoker.include_dirs)) {
     invoker.include_dirs = extra_include_dirs
   } else {
@@ -81,6 +112,7 @@ template("bob_executable")
   
   executable(target_name)
   {
+    configs += [ bob_console_config ]
     metadata = {}
     forward_variables_from(invoker, "*")
   }
