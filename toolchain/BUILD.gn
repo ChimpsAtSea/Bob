@@ -384,7 +384,6 @@ toolchain("clang")
 
   tool("cc") {
     depfile = "{{output}}.d"
-    print(bob_clang_frontend + " " + clang + " " + bob_clang_flags)
     command = bob_clang_frontend + " " + clang + " " + bob_clang_flags + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
     description = "(CC {{output}}) $command"
     outputs = [ "{{target_out_dir}}/{{target_output_name}}.{{source_name_part}}$object_extension" ]

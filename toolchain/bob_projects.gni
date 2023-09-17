@@ -81,9 +81,9 @@ template("bob_executable")
   }
 
   if(!defined(invoker.configs)) {
-    invoker.configs = configs
+    invoker.configs = []
   } else {
-    invoker.configs += configs
+    invoker.configs += []
   }
   
   executable(target_name)
@@ -224,5 +224,43 @@ template("bob_hlsl") {
     args += [ "--outputs" ] +  rebase_path(outputs)
     args += [ "--inputs" ] + rebase_path(sources)
     args += [ "--sources" ] + sources
+  }
+}
+
+
+# FIXME: Select the correct configuration
+ida_sdk_config = "x64_win_vc_64"
+template("bob_ida_plugin64")
+{
+  if(!defined(invoker.defines)) { invoker.defines = [] }
+  if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
+  if(!defined(invoker.lib_dirs)) { invoker.lib_dirs = [] }
+  if(!defined(invoker.libs)) { invoker.libs = [] }
+
+  if(!defined(invoker.include_dirs)) {
+    invoker.include_dirs = extra_include_dirs
+  } else {
+    invoker.include_dirs += extra_include_dirs
+  }
+
+  if (ida_sdk_installed) {
+    shared_library(target_name)
+    {
+      metadata = {}
+      output_name = target_name + "64"
+      output_dir = "$root_out_dir/plugins"
+      forward_variables_from(invoker, "*")
+      defines += [ "_SILENCE_CXX20_IS_POD_DEPRECATION_WARNING" ] #TODO Your Ass, My Size-24 Hoof
+      include_dirs += [ ida_sdk_dir + "/include" ]
+      lib_dirs += [ ida_sdk_dir + "/lib/" + ida_sdk_config ]
+      libs += [ "ida64.lib" ]
+      #libs += [ "pro.lib" ]
+    }
+  } else {
+    source_set(target_name)
+    {
+      metadata = {}
+      forward_variables_from(invoker, "*")
+    }
   }
 }

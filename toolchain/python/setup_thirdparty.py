@@ -24,6 +24,7 @@ from task_build_cmake import CMakeBuildTask
 from task_build_detours import DetoursBuildTask
 from task_build_iced_x86 import IcedX86BuildTask
 from task_build_llvm import LLVMBuildTask
+from task_build_idasdk import IDASDKBuildTask
 from task_build_download import download_extract_task
 from task_build_download import download_copy_task
 from task_build_copy import CopyBuildTask
@@ -63,11 +64,24 @@ ewdk_task = download_extract_task(ExtractBuildTask,
 #llvm_debug_task = LLVMBuildTask('debug', llvm_version, [llvm_prebuilt_task, llvm_src_task])
 #llvm_release_task = LLVMBuildTask('release', llvm_version, [llvm_prebuilt_task, llvm_src_task])
 
-llvm_configs = util.get_llvm_build_configs() or ['release']
-llvm_tasks = [LLVMBuildTask(config, []) for config in llvm_configs]
+# Yes. Let's build LLVM 4 entire times because Microsoft had to make things difficult.
+
+llvm_configs = util.get_llvm_build_configs() or ['Debug:MultiThreadedDebugDLL', 'Release:MultiThreadedDLL']
+llvm_tasks = []
+for config in llvm_configs:
+    config = config.split(':')
+    target_config = config[0].lower()
+    msvc_runtime_library = None
+    if len(config) >= 2:
+        msvc_runtime_library = config[1]
+    else:
+        msvc_runtime_library = 'MDd' if target_config == 'debug' else 'MD'
+    util.dprint('llvm config', target_config, msvc_runtime_library)
+    llvm_task = LLVMBuildTask(target_config, msvc_runtime_library, [])
+    llvm_tasks.append(llvm_task)
 
 llvm_directory = os.path.join(util.get_thirdparty_dir(), 'llvm')
-llvm_bin_directory = os.path.join(llvm_directory, 'bin')
+llvm_build_bin_directory = os.path.join(llvm_directory, 'bin')
 
 
 
@@ -149,6 +163,9 @@ pip_task = download_copy_task('https://bootstrap.pypa.io/pip/pip.pyz',
     pip_directory)
 
 iced_x86_task = IcedX86BuildTask([pip_task])
+ida_sdk_task = IDASDKBuildTask()
+
+
 
 #zlib_build_task = ZlibBuildTask([cmake_task, ninja_build_task])
 #zlib_build_tasks = [

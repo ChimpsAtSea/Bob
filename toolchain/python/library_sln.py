@@ -545,7 +545,10 @@ def write_cpp_project(solution : Solution, project : Project):
             additional_options = []
             include_path = []
             external_include_path = []
+        
         lines.append(f'  <PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'{osplatformconfig.vs_triplet}\'">')
+        lines.append(f'    <BobRootOutputDir>{os.path.join(util.get_project_root_dir(), "solution", osplatformconfig.fs_triplet)}</BobRootOutputDir>')
+        lines.append(f'    <BobTargetOutputDir>{os.path.dirname(output_file)}</BobTargetOutputDir>')
         lines.append(f'    <NMakeOutput>{output_file}</NMakeOutput>')
         lines.append(f'    <NMakePreprocessorDefinitions>{";".join(preprocessor_definitions + ["$(NMakePreprocessorDefinitions)"])}</NMakePreprocessorDefinitions>')
         lines.append(f'    <NMakeBuildCommandLine>{build_command}</NMakeBuildCommandLine>')

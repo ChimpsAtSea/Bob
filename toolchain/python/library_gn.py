@@ -115,6 +115,8 @@ class Description:
     userdata = None
     args : list[str] = []
     script : str = ""
+    output_name : str = ""
+    output_dir : str = ""
 
     # Metadata
     custom_target_type : str = ""
@@ -162,6 +164,8 @@ class Description:
         self.visibility = self._pop_variable(data, 'visibility', self.visibility)
         self.args = self._pop_variable(data, 'args', self.args)
         self.script = self._pop_variable(data, 'script', self.script)
+        self.output_name = self._pop_variable(data, 'output_name', self.output_name)
+        self.output_dir = self._pop_variable(data, 'output_dir', self.output_dir)
 
         if len(data):
             print("WARN: GN Description contains unparsed data")
@@ -321,9 +325,16 @@ def _generate_build_configuration_files_command(target_os: str, target_config: s
 
     gn_args.append(f'llvm_root_dir="{util.get_llvm_root_dir()}"')
     gn_args.append(f'llvm_project_dir="{util.get_llvm_project_dir()}"')
-    gn_args.append(f'llvm_build_dir="{util.get_llvm_build_dir()}"')
-    gn_args.append(f'llvm_bin_dir="{util.get_llvm_bin_dir()}"')
-    gn_args.append(f'llvm_src_dir="{util.get_llvm_src_dir()}"')
+
+    llvm_config = 'debug' if target_config == 'debug' else 'release'
+    msvc_runtime_library = 'MD' if target_config == 'debug' else 'MD'
+    
+    gn_args.append(f'llvm_config="{llvm_config}"')
+    gn_args.append(f'llvm_build_root_dir="{util.get_llvm_build_root_dir()}"')
+    gn_args.append(f'llvm_build_dir="{util.get_llvm_build_dir(llvm_config, msvc_runtime_library)}"')
+    gn_args.append(f'llvm_build_bin_dir="{util.get_llvm_build_bin_dir(llvm_config, msvc_runtime_library)}"')
+    gn_args.append(f'llvm_build_lib_dir="{util.get_llvm_build_lib_dir(llvm_config, msvc_runtime_library)}"')
+    gn_args.append(f'llvm_build_include_dir="{util.get_llvm_build_include_dir(llvm_config, msvc_runtime_library)}"')
 
     gn_args.append(f'llvm_clang="{util.get_llvm_clang()}"')
     gn_args.append(f'llvm_ar="{util.get_llvm_ar()}"')
@@ -331,6 +342,11 @@ def _generate_build_configuration_files_command(target_os: str, target_config: s
     gn_args.append(f'llvm_lld_link="{util.get_llvm_lld_link()}"')
     gn_args.append(f'llvm_wasm_ld="{util.get_llvm_wasm_ld()}"')
     gn_args.append(f'llvm_ld_lld="{util.get_llvm_ld_lld()}"')
+    
+    util.ignore_missing_subdirectories += 1
+    gn_args.append(f'ida_sdk_dir="{util.get_ida_sdk_dir()}"')
+    gn_args.append(f'ida_sdk_installed={str(os.path.exists(util.get_ida_sdk_dir())).lower()}')
+    util.ignore_missing_subdirectories -= 1
 
     gn_args.append(f'tag_configuration_triplets_concat="{tag_configuration_triplets_concat}"')
 
@@ -507,7 +523,7 @@ async def get_descriptions_async(output_directory: str) -> dict:
             print(f'Command failed {inspect.currentframe().f_code.co_name}:', command)
             raise Exception()
 
-@timer_func
+#@timer_func
 def get_description(output_directory: str, target: Target) -> dict:
     gn = util.get_gn()
     command = f'{gn} desc --format=json \"{output_directory}\" \"{target.target}\"'

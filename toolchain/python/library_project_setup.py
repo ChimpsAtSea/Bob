@@ -146,7 +146,7 @@ def get_num_configurations():
                         num_configurations += 1
     return num_configurations
 
-@timer_func
+#@timer_func
 def gn_generate_project_configurations():
     if util.debug:
         for target_os in gn_operating_systems:
@@ -207,7 +207,7 @@ def read_all_targets_and_descriptions(global_targets : list[sln.TargetSettings])
 # Setup the Visual Studio Projects
 # -----
 
-@timer_func
+#@timer_func
 def setup_solution_project_structure(solution : sln.Solution, global_targets : list[sln.TargetSettings]):
 
     [all_target_descriptions, all_targets] = read_all_targets_and_descriptions(global_targets)
@@ -254,9 +254,9 @@ def setup_solution_project_structure(solution : sln.Solution, global_targets : l
 
     def enqueue_folders(project : sln.Project, parent_folder : sln.Folder):
         description_and_osplatformconfig = project.descriptions[0]
-        project_folder = description_and_osplatformconfig.description.project_folder
-        if len(project_folder):
-            for child_folder_name in project_folder:
+        project_folders = description_and_osplatformconfig.description.project_folder
+        if project_folders:
+            for child_folder_name in project_folders:
                 folder = parent_folder.get_folder_or_create(child_folder_name)
                 #print(parent_folder.name, folder.name, len(parent_folder.folders))
                 parent_folder = folder

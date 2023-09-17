@@ -13,9 +13,13 @@ declare_args() {
 
   llvm_root_dir = ""
   llvm_project_dir = ""
+
+  llvm_config = ""
+  llvm_build_root_dir = ""
   llvm_build_dir = ""
-  llvm_bin_dir = ""
-  llvm_src_dir = ""
+  llvm_build_bin_dir = ""
+  llvm_build_lib_dir = ""
+  llvm_build_include_dir = ""
 
   llvm_clang = ""
   llvm_ar = ""
@@ -24,17 +28,32 @@ declare_args() {
   llvm_wasm_ld = ""
   llvm_ld_lld = ""
 
+  ida_sdk_dir = ""
+  ida_sdk_installed = false
+
   tag_configuration_triplets_concat = ""
 }
 
 not_needed([ 
-  "llvm_dir_dir",
-  "llvm_src_dir",
-  "llvm_bin_dir",
+  "llvm_root_dir",
+  "llvm_project_dir",
+
+  "llvm_config",
+  "llvm_build_root_dir",
+  "llvm_build_dir",
+  "llvm_build_bin_dir",
+  "llvm_build_lib_dir",
+  "llvm_build_include_dir",
+
   "llvm_clang",
   "llvm_ar",
   "llvm_ld",
-  "llvm_lld_link" ])
+  "llvm_lld_link",
+  "llvm_wasm_ld",
+  "llvm_ld_lld",
+
+  "ida_sdk_dir",
+  "ida_sdk_installed" ])
 
 tag_configuration_triplets = []
 tag_configuration_defines = []
