@@ -76,9 +76,9 @@ class LLVMBuildTask(VisualCPPBuildTask):
 
             ninja = util.get_ninja()
 
-            print(f'-DCMAKE_MSVC_RUNTIME_LIBRARY:STRING={self.cmake_runtime_library}')
-            print(f'-DCMAKE_BUILD_TYPE:STRING={self.configuration}')
-            print(f'-DLLVM_USE_CRT_{self.llvm_runtime_config.upper()}:STRING={self.msvc_runtime_library}')
+            util.dprint(f'-DCMAKE_MSVC_RUNTIME_LIBRARY:STRING={self.cmake_runtime_library}')
+            util.dprint(f'-DCMAKE_BUILD_TYPE:STRING={self.configuration}')
+            util.dprint(f'-DLLVM_USE_CRT_{self.llvm_runtime_config.upper()}:STRING={self.msvc_runtime_library}')
 
             if not is_cmake_built:
                 cmake = util.get_cmake()
