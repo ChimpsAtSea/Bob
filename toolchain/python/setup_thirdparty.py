@@ -23,6 +23,7 @@ from task_build_assimp import AssimpBuildTask
 from task_build_cmake import CMakeBuildTask
 from task_build_detours import DetoursBuildTask
 from task_build_iced_x86 import IcedX86BuildTask
+from task_build_pefile import PEFileBuildTask
 from task_build_llvm import LLVMBuildTask
 from task_build_idasdk import IDASDKBuildTask
 from task_build_download import download_extract_task
@@ -163,6 +164,7 @@ pip_task = download_copy_task('https://bootstrap.pypa.io/pip/pip.pyz',
     pip_directory)
 
 iced_x86_task = IcedX86BuildTask([pip_task])
+pefile_task = PEFileBuildTask([pip_task])
 ida_sdk_task = IDASDKBuildTask()
 
 
