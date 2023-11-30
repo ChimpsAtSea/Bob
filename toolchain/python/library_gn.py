@@ -15,7 +15,7 @@ def parse_gn_json_output_object(stdout : str):
         output = list[str]()
         json_string = str()
         for index, line in enumerate(stdout_lines):
-            if line.startswith('{'):
+            if line.strip() == '{':
                 json_string = '\n'.join(stdout_lines[index:])
                 break
             else:
@@ -486,6 +486,7 @@ def get_descriptions(output_directory: str) -> dict:
             data = json.loads(json_string)
             return data
         except Exception as e:
+            print(json_string)
             raise e
     print(f'Command failed {inspect.currentframe().f_code.co_name}:', command)
     raise Exception(output)

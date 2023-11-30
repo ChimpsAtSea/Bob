@@ -429,11 +429,37 @@ toolchain("clang")
       restat = true
     }
     outputs += [ "{{output_dir}}/{{target_output_name}}{{output_extension}}" ]
+
+    #default_output_extension = "$shared_library_extension"
+    #default_output_dir = "{{root_out_dir}}/bin/"
+    #
+    #command = ld + " {{ldflags}} {{libs}} {{solibs}} {{rlibs}} {{inputs}} " + string_join(" ", solink_ldflags)
+    #description = "(SHARED {{output}}) $command"
+
+    #outputs = [ "{{output_dir}}/{{target_output_name}}{{output_extension}}" ]
     default_output_extension = "$shared_library_extension"
     default_output_dir = "{{root_out_dir}}/bin/"
 
-    command = ld + " {{ldflags}} {{libs}} {{solibs}} {{rlibs}} {{inputs}} " + string_join(" ", solink_ldflags)
-    description = "(SHARED {{output}}) $command"
+    extra_objects = []
+    if(is_target_linux) {
+      extra_objects += [ rebase_path(bob_third_party_dir + "/linux-musl/$target_tuple_cpu-$target_tuple_os-native/lib/crt1.o") ]
+    }
+    if(is_target_windows || is_target_webassembly || is_target_linux) {
+      command_parts = []
+      command_parts += ["{{ldflags}}"]
+      command_parts += ["{{libs}}"]
+      command_parts += ["{{solibs}}"]
+      command_parts += ["{{rlibs}}"]
+      command_parts += ["{{inputs}}"]
+      command_parts += extra_objects
+      command_parts += link_ldflags
+      rspfile = "{{output_dir}}/{{target_output_name}}{{output_extension}}.rsp"
+      rspfile_content = string_join(" ", command_parts)
+      command = string_join(" ", [ld, "@{{output_dir}}/{{target_output_name}}{{output_extension}}.rsp"])
+    } else {
+      fail("Error: solink unsupported")
+    }
+    description = "(SOLINK {{output}}) $command"
   }
 
   tool("link") {
@@ -454,9 +480,9 @@ toolchain("clang")
       command_parts += ["{{inputs}}"]
       command_parts += extra_objects
       command_parts += link_ldflags
-      rspfile = "{{output}}.rsp"
+      rspfile = "{{output_dir}}/{{target_output_name}}{{output_extension}}.rsp"
       rspfile_content = string_join(" ", command_parts)
-      command = string_join(" ", [ld, "@{{output}}.rsp"])
+      command = string_join(" ", [ld, "@{{output_dir}}/{{target_output_name}}{{output_extension}}.rsp"])
     } else {
       fail("Error: solink unsupported")
     }
