@@ -4,17 +4,11 @@ extra_include_dirs = [
 
 template("bob_library")
 {
-  if(!defined(invoker.include_dirs)) {
-    invoker.include_dirs = extra_include_dirs
-  } else {
-    invoker.include_dirs += extra_include_dirs
-  }
+  if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
+  if(!defined(invoker.defines)) { invoker.defines = [] }
 
-  if(!defined(invoker.defines)) {
-    invoker.defines = tag_configuration_defines
-  } else {
-    invoker.defines += tag_configuration_defines
-  }
+  invoker.include_dirs += extra_include_dirs
+  invoker.defines += tag_configuration_defines
   
   target(bob_library_type, target_name)
   {
@@ -25,17 +19,11 @@ template("bob_library")
 
 template("bob_static_library")
 {
-  if(!defined(invoker.include_dirs)) {
-    invoker.include_dirs = extra_include_dirs
-  } else {
-    invoker.include_dirs += extra_include_dirs
-  }
+  if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
+  if(!defined(invoker.defines)) { invoker.defines = [] }
 
-  if(!defined(invoker.defines)) {
-    invoker.defines = tag_configuration_defines
-  } else {
-    invoker.defines += tag_configuration_defines
-  }
+  invoker.include_dirs += extra_include_dirs
+  invoker.defines += tag_configuration_defines
   
   static_library(target_name)
   {
@@ -46,17 +34,11 @@ template("bob_static_library")
 
 template("bob_shared_library")
 {
-  if(!defined(invoker.include_dirs)) {
-    invoker.include_dirs = extra_include_dirs
-  } else {
-    invoker.include_dirs += extra_include_dirs
-  }
+  if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
+  if(!defined(invoker.defines)) { invoker.defines = [] }
 
-  if(!defined(invoker.defines)) {
-    invoker.defines = tag_configuration_defines
-  } else {
-    invoker.defines += tag_configuration_defines
-  }
+  invoker.include_dirs += extra_include_dirs
+  invoker.defines += tag_configuration_defines
   
   shared_library(target_name)
   {
@@ -68,23 +50,11 @@ template("bob_shared_library")
 bob_executable_config = get_path_info(":submodule_windows_ldconfig", "abspath")
 template("bob_executable")
 {
-  if(!defined(invoker.include_dirs)) {
-    invoker.include_dirs = extra_include_dirs
-  } else {
-    invoker.include_dirs += extra_include_dirs
-  }
+  if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
+  if(!defined(invoker.defines)) { invoker.defines = [] }
 
-  if(!defined(invoker.defines)) {
-    invoker.defines = tag_configuration_defines
-  } else {
-    invoker.defines += tag_configuration_defines
-  }
-
-  if(!defined(invoker.configs)) {
-    invoker.configs = []
-  } else {
-    invoker.configs += []
-  }
+  invoker.include_dirs += extra_include_dirs
+  invoker.defines += tag_configuration_defines
   
   executable(target_name)
   {
@@ -97,18 +67,11 @@ template("bob_executable")
 bob_console_config = get_path_info(":submodule_console_ldconfig", "abspath")
 template("bob_console")
 {
+  if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
+  if(!defined(invoker.defines)) { invoker.defines = [] }
 
-  if(!defined(invoker.include_dirs)) {
-    invoker.include_dirs = extra_include_dirs
-  } else {
-    invoker.include_dirs += extra_include_dirs
-  }
-
-  if(!defined(invoker.defines)) {
-    invoker.defines = tag_configuration_defines
-  } else {
-    invoker.defines += tag_configuration_defines
-  }
+  invoker.include_dirs += extra_include_dirs
+  invoker.defines += tag_configuration_defines
   
   executable(target_name)
   {
@@ -120,11 +83,11 @@ template("bob_console")
 
 template("bob_source_set")
 {
-  if(!defined(invoker.include_dirs)) {
-    invoker.include_dirs = extra_include_dirs
-  } else {
-    invoker.include_dirs += extra_include_dirs
-  }
+  if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
+  if(!defined(invoker.defines)) { invoker.defines = [] }
+
+  invoker.include_dirs += extra_include_dirs
+  invoker.defines += tag_configuration_defines
   
   source_set(target_name)
   {
@@ -135,11 +98,11 @@ template("bob_source_set")
 
 template("bob_python")
 {
-  if(!defined(invoker.include_dirs)) {
-    invoker.include_dirs = extra_include_dirs
-  } else {
-    invoker.include_dirs += extra_include_dirs
-  }
+  if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
+  if(!defined(invoker.defines)) { invoker.defines = [] }
+
+  invoker.include_dirs += extra_include_dirs
+  invoker.defines += tag_configuration_defines
   
   source_set(target_name)
   {

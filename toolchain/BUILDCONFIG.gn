@@ -149,27 +149,31 @@ _shared_binary_target_configs = [ get_path_info(":compiler_defaults", "abspath")
 
 # Apply that default list to the binary target types.
 set_defaults("executable") {
-  configs = _shared_binary_target_configs
+  if (!defined(configs)) { configs = [] }
+  configs += _shared_binary_target_configs
   configs += [ get_path_info(":binary_library_ldconfig", "abspath") ]
 
   # Executables get this additional configuration.
   configs += [ get_path_info(":executable_ldconfig", "abspath") ]
 }
 set_defaults("static_library") {
-  configs = _shared_binary_target_configs
+  if (!defined(configs)) { configs = [] }
+  configs += _shared_binary_target_configs
 
   # Static libraries get this additional configuration.
   configs += [ get_path_info(":static_library_ldconfig", "abspath") ]
 }
 set_defaults("shared_library") {
-  configs = _shared_binary_target_configs
+  if (!defined(configs)) { configs = [] }
+  configs += _shared_binary_target_configs
   configs += [ get_path_info(":binary_library_ldconfig", "abspath") ]
 
   # Shared libraries get this additional configuration.
   configs += [ get_path_info(":shared_library_ldconfig", "abspath") ]
 }
 set_defaults("source_set") {
-  configs = _shared_binary_target_configs
+  if (!defined(configs)) { configs = [] }
+  configs += _shared_binary_target_configs
 }
 
 set_default_toolchain(get_path_info(":clang", "abspath"))

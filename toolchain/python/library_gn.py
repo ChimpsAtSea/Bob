@@ -117,6 +117,8 @@ class Description:
     script : str = ""
     output_name : str = ""
     output_dir : str = ""
+    precompiled_header : str = ""
+    precompiled_source : str = ""
 
     # Metadata
     custom_target_type : str = ""
@@ -166,6 +168,8 @@ class Description:
         self.script = self._pop_variable(data, 'script', self.script)
         self.output_name = self._pop_variable(data, 'output_name', self.output_name)
         self.output_dir = self._pop_variable(data, 'output_dir', self.output_dir)
+        self.precompiled_header = self._pop_variable(data, 'precompiled_header', self.precompiled_header)
+        self.precompiled_source = self._pop_variable(data, 'precompiled_source', self.precompiled_source)
 
         if len(data):
             print("WARN: GN Description contains unparsed data")
@@ -396,17 +400,16 @@ async def generate_build_configuration_files_async(target_os: str, target_config
         if not process.returncode:
             pass
         else:
-            print(f'Command failed {inspect.currentframe().f_code.co_name}:', command)
             sys.stdout.buffer.write(stdout)
             raise Exception(stdout.decode('utf-8'))
         
         patch_build_configuration_files(target_os, target_config, target_link_config, target_cpu)
     except Exception as e:
-        print(f'Command failed {inspect.currentframe().f_code.co_name}:', command)
+        print(f'Command failed code:{process.returncode} {hex(process.returncode)} {inspect.currentframe().f_code.co_name}:', command)
         raise e
     
     if process.returncode:
-        print(f'Command failed {inspect.currentframe().f_code.co_name}:', command)
+        print(f'Command failed code:{process.returncode} {hex(process.returncode)} {inspect.currentframe().f_code.co_name}:', command)
         sys.stdout.buffer.write(stdout)
         raise Exception(stdout.decode('utf-8'))
 

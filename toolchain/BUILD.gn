@@ -383,6 +383,7 @@ toolchain("clang")
   }
 
   tool("cc") {
+    precompiled_header_type = "gcc"
     depfile = "{{output}}.d"
     command = bob_clang_frontend + " " + clang + " " + bob_clang_flags + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
     description = "(CC {{output}}) $command"
@@ -395,6 +396,7 @@ toolchain("clang")
   }
 
   tool("cxx") {
+    precompiled_header_type = "gcc"
     depfile = "{{output}}.d"
     command = bob_clang_frontend + " " + clang + " " + bob_clang_flags + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
     description = "(CXX {{output}}) $command"
