@@ -497,9 +497,14 @@ def write_cpp_project(solution : Solution, project : Project):
 
             output_directory = gn.system_path(util.get_project_root_dir(), osplatformconfig.output_root)
             ninja = util.get_ninja()
-            build_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
-            rebuild_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
-            clean_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}" -tclean'
+            if util.debug:
+                build_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
+                rebuild_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
+                clean_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}" -tclean'
+            else:
+                build_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -C "{output_directory}"'
+                rebuild_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -C "{output_directory}"'
+                clean_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -C "{output_directory}" -tclean'
             for output in description.outputs:
                 build_command += f' "{os.path.relpath(output, osplatformconfig.output_root)}"'
                 rebuild_command += f' "{os.path.relpath(output, osplatformconfig.output_root)}"'
