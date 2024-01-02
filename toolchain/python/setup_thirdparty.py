@@ -39,11 +39,28 @@ _7z_task = download_extract_task(ExtractMSIBuildTask,
     '7z2201-x64.msi',
     _7z_directory)
 
-bcs_ewdk_directory = os.path.join(util.get_thirdparty_dir(), 'EWDK/EWDK_ni_release_svc_prod1_22621_220804-1759')
+bob_ewdk_directory = os.path.join(util.get_thirdparty_dir(), 'EWDK/EWDK_ni_release_svc_prod1_22621_220804-1759')
 ewdk_task = download_extract_task(ExtractBuildTask,
     'https://software-static.download.prss.microsoft.com/dbazure/988969d5-f34g-4e03-ac9d-1f9786c66749/EWDK_ni_release_svc_prod1_22621_220804-1759.iso',
     'EWDK_ni_release_svc_prod1_22621_220804-1759.iso',
-    bcs_ewdk_directory)
+    bob_ewdk_directory)
+
+bob_vc6_directory = os.path.join(util.get_thirdparty_dir(), 'vc6')
+bob_vc6_cd1_directory = os.path.join(bob_vc6_directory, 'cd1')
+bob_vc6_cd2_directory = os.path.join(bob_vc6_directory, 'cd2')
+bob_vc6_cd3_directory = os.path.join(bob_vc6_directory, 'cd3')
+vc6_task_cd1 = download_extract_task(ExtractBuildTask,
+    'https://archive.org/download/en_vs6_ent/en_vs6_ent_cd1.iso',
+    'en_vs6_ent_cd1.iso',
+    bob_vc6_cd1_directory)
+vc6_task_cd2 = download_extract_task(ExtractBuildTask,
+    'https://archive.org/download/en_vs6_ent/en_vs6_ent_cd2.iso',
+    'en_vs6_ent_cd2.iso',
+    bob_vc6_cd2_directory)
+vc6_task_cd3 = download_extract_task(ExtractBuildTask,
+    'https://archive.org/download/en_vs6_ent/en_vs6_ent_cd3.iso',
+    'en_vs6_ent_cd3.iso',
+    bob_vc6_cd3_directory)
 
 #llvm_version = '15.0.6'
 #util.llvm_version = llvm_version #TODO: Move this
