@@ -1,6 +1,7 @@
 
 import os
 import subprocess
+import shutil
 from task_manager import BuildTask
 from task_build_copy import CopyBuildTask
 import library_util as util
@@ -22,8 +23,9 @@ class DownloadBuildTask(BuildTask):
         if not os.path.exists(destination_directory):
             os.makedirs(destination_directory)
 
-        process = subprocess.Popen(['curl', '-L', self.url, '-o', self.filepath])
+        process = subprocess.Popen(['curl', '-L', self.url, '-o', f'{self.filepath}.temp'])
         process.wait()
+        shutil.move(f'{self.filepath}.temp', self.filepath)
 
 def download_extract_task(ExtractTask, url, cache_filename, output_directory, force = False):
     download_filepath = os.path.join(util.get_download_cache_dir(), cache_filename)
