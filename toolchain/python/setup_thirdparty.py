@@ -33,6 +33,22 @@ from task_build_copy import CopyBuildTask
 
 util.async_start()
 
+
+pip_directory = util.get_pip_dir()
+pip_task = download_copy_task('https://bootstrap.pypa.io/pip/pip.pyz',
+    'pip.pyz',
+    pip_directory)
+
+iced_x86_task = IcedX86BuildTask([pip_task])
+pip_toml_task = PipTOMLBuildTask([pip_task])
+pefile_task = PEFileBuildTask([pip_task])
+ida_sdk_task = IDASDKBuildTask()
+
+
+
+
+
+
 _7z_directory = os.path.join(util.get_thirdparty_dir(), '7-Zip/7z2201-x64/Files/7-Zip')
 _7z_task = download_extract_task(ExtractMSIBuildTask,
     'https://www.7-zip.org/a/7z2201-x64.msi',
@@ -175,18 +191,6 @@ detours_build_tasks = [
     DetoursBuildTask('x64', 'debug', []),
     DetoursBuildTask('x86', 'release', []),
     DetoursBuildTask('x86', 'debug', []) ]
-
-pip_directory = util.get_pip_dir()
-pip_task = download_copy_task('https://bootstrap.pypa.io/pip/pip.pyz',
-    'pip.pyz',
-    pip_directory)
-
-iced_x86_task = IcedX86BuildTask([pip_task])
-pip_toml_task = PipTOMLBuildTask([pip_task])
-pefile_task = PEFileBuildTask([pip_task])
-ida_sdk_task = IDASDKBuildTask()
-
-
 
 #zlib_build_task = ZlibBuildTask([cmake_task, ninja_build_task])
 #zlib_build_tasks = [
