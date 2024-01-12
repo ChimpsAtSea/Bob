@@ -386,7 +386,8 @@ toolchain("clang")
     precompiled_header_type = "gcc"
     depfile = "{{output}}.d"
     command = bob_clang_frontend + " " + clang + " " + bob_clang_flags + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
-    description = "(CC {{output}}) $command"
+    #description = "(CC {{output}}) $command"
+    description = "(CC {{output}})"
     outputs = [ "{{target_out_dir}}/{{target_output_name}}.{{source_name_part}}$object_extension" ]
     depsformat = "gcc"
 
@@ -399,7 +400,8 @@ toolchain("clang")
     precompiled_header_type = "gcc"
     depfile = "{{output}}.d"
     command = bob_clang_frontend + " " + clang + " " + bob_clang_flags + " -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
-    description = "(CXX {{output}}) $command"
+    #description = "(CXX {{output}}) $command"
+    description = "(CXX {{output}})"
     outputs = [ "{{target_out_dir}}/{{target_output_name}}.{{source_name_part}}$object_extension" ]
     depsformat = "gcc"
 
@@ -420,7 +422,8 @@ toolchain("clang")
     } else {
       command = ar + " rcs {{output}} {{inputs}}"
     }
-    description = "(STATIC {{output}}) $command"
+    #description = "(STATIC {{output}}) $command"
+    description = "(STATIC {{output}})"
   }
 
   tool("solink") {
@@ -432,13 +435,6 @@ toolchain("clang")
     }
     outputs += [ "{{output_dir}}/{{target_output_name}}{{output_extension}}" ]
 
-    #default_output_extension = "$shared_library_extension"
-    #default_output_dir = "{{root_out_dir}}/bin/"
-    #
-    #command = ld + " {{ldflags}} {{libs}} {{solibs}} {{rlibs}} {{inputs}} " + string_join(" ", solink_ldflags)
-    #description = "(SHARED {{output}}) $command"
-
-    #outputs = [ "{{output_dir}}/{{target_output_name}}{{output_extension}}" ]
     default_output_extension = "$shared_library_extension"
     default_output_dir = "{{root_out_dir}}/bin/"
 
@@ -461,7 +457,8 @@ toolchain("clang")
     } else {
       fail("Error: solink unsupported")
     }
-    description = "(SOLINK {{output}}) $command"
+    #description = "(SOLINK {{output}}) $command"
+    description = "(SOLINK {{output}})"
   }
 
   tool("link") {
@@ -488,7 +485,8 @@ toolchain("clang")
     } else {
       fail("Error: solink unsupported")
     }
-    description = "(LINK {{output}}) $command"
+    #description = "(LINK {{output}}) $command"
+    description = "(LINK {{output}})"
   }
 
   # Use busybox for these. Fuck windows, unix coreutils ftw
