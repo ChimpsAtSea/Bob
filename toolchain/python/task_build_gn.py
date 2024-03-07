@@ -15,7 +15,7 @@ class GNBuildTask(VisualCPPBuildTask):
         gn = util.get_gn()
         util.ignore_missing_filepaths -= 1
 
-        if os.path.exists(gn):
+        if util.build_gn == False and os.path.exists(gn):
             return # Don't rebuild
         
         source_directory = os.path.join(util.get_thirdparty_dir(), f'gn/gn')

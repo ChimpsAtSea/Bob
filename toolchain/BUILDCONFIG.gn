@@ -1,3 +1,15 @@
+if (target_os == "") {
+  target_os = host_os
+}
+if (target_cpu == "") {
+  target_cpu = host_cpu
+}
+if (current_cpu == "") {
+  current_cpu = target_cpu
+}
+if (current_os == "") {
+  current_os = target_os
+}
 
 declare_args() {
   target_config = "debug"
@@ -31,8 +43,43 @@ declare_args() {
   ida_sdk_dir = ""
   ida_sdk_installed = false
 
-  tag_configuration_triplets_concat = ""
+  tag_configuration_triplets_concat = "" #TODO: This needs to be moved out of Bob
 }
+
+# This array contains all of the arguments to pass to a
+# python command script to forward the GN environment
+bob_python_forward_arguments = []
+bob_python_forward_arguments += [ "--host_os", host_os ]
+bob_python_forward_arguments += [ "--host_cpu", host_cpu ]
+bob_python_forward_arguments += [ "--target_os", target_os ]
+bob_python_forward_arguments += [ "--target_cpu", target_cpu ]
+bob_python_forward_arguments += [ "--current_cpu", current_cpu ]
+bob_python_forward_arguments += [ "--current_os", current_os ]
+bob_python_forward_arguments += [ "--target_config", target_config ]
+bob_python_forward_arguments += [ "--target_link_config", target_link_config ]
+bob_python_forward_arguments += [ "--bob_root_dir", rebase_path(bob_root_dir) ]
+bob_python_forward_arguments += [ "--bob_project_root_dir", rebase_path(bob_project_root_dir) ]
+bob_python_forward_arguments += [ "--bob_third_party_dir", rebase_path(bob_third_party_dir) ]
+bob_python_forward_arguments += [ "--bob_download_cache_dir", rebase_path(bob_download_cache_dir) ]
+bob_python_forward_arguments += [ "--bob_ewdk_dir", rebase_path(bob_ewdk_dir) ]
+if (bob_clang_frontend != "") { bob_python_forward_arguments += [ "--bob_clang_frontend", rebase_path(bob_clang_frontend) ] } 
+if (bob_clang_flags != "") { bob_python_forward_arguments += [ "--bob-clang-flags", bob_clang_flags ] } 
+bob_python_forward_arguments += [ "--llvm_root_dir", rebase_path(llvm_root_dir) ]
+bob_python_forward_arguments += [ "--llvm_project_dir", rebase_path(llvm_project_dir) ]
+bob_python_forward_arguments += [ "--llvm_config", llvm_config ]
+bob_python_forward_arguments += [ "--llvm_build_root_dir", rebase_path(llvm_build_root_dir) ]
+bob_python_forward_arguments += [ "--llvm_build_dir", rebase_path(llvm_build_dir) ]
+bob_python_forward_arguments += [ "--llvm_build_bin_dir", rebase_path(llvm_build_bin_dir) ]
+bob_python_forward_arguments += [ "--llvm_build_lib_dir", rebase_path(llvm_build_lib_dir) ]
+bob_python_forward_arguments += [ "--llvm_build_include_dir", rebase_path(llvm_build_include_dir) ]
+bob_python_forward_arguments += [ "--llvm_clang", rebase_path(llvm_clang) ]
+bob_python_forward_arguments += [ "--llvm_ar", rebase_path(llvm_ar) ]
+bob_python_forward_arguments += [ "--llvm_ld", rebase_path(llvm_ld) ]
+bob_python_forward_arguments += [ "--llvm_lld_link", rebase_path(llvm_lld_link) ]
+bob_python_forward_arguments += [ "--llvm_wasm_ld", rebase_path(llvm_wasm_ld) ]
+bob_python_forward_arguments += [ "--llvm_ld_lld", rebase_path(llvm_ld_lld) ]
+bob_python_forward_arguments += [ "--ida_sdk_dir", rebase_path(ida_sdk_dir) ]
+bob_python_forward_arguments += [ "--ida_sdk_installed", string_transform("$ida_sdk_installed", "lower") ]
 
 not_needed([ 
   "llvm_root_dir",
@@ -77,19 +124,6 @@ foreach(tag_configuration_triplet, string_split(tag_configuration_triplets_conca
 
 #print(tag_configuration_triplets)
 #print(tag_configuration_defines)
-
-if (target_os == "") {
-  target_os = host_os
-}
-if (target_cpu == "") {
-  target_cpu = host_cpu
-}
-if (current_cpu == "") {
-  current_cpu = target_cpu
-}
-if (current_os == "") {
-  current_os = target_os
-}
 
 is_target_linux = current_os == "linux"
 is_target_mac = current_os == "mac"

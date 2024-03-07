@@ -491,8 +491,7 @@ toolchain("clang")
 
   # Use busybox for these. Fuck windows, unix coreutils ftw
   coreutils = ""
-  if(is_host_windows)
-  {
+  if(is_host_windows) {
     coreutils = busybox + " "
   }
   

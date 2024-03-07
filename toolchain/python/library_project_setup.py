@@ -86,9 +86,9 @@ def vs_configuration_to_cmake_configuration(target_config : str):
 def vs_link_configuration_get_pretty_name(target_link_config : str):
     lookup = {
         'static': 'Static',
-        'shared': 'Dynamic',
+        'shared': 'Shared',
         'staticprofile': 'Static Profile',
-        'sharedprofile': 'Dynamic Profile',
+        'sharedprofile': 'Shared Profile',
     }
     if target_link_config in lookup:
         return lookup[target_link_config]

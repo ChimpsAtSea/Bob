@@ -2,62 +2,54 @@ extra_include_dirs = [
   ".",
   "//" ]
 
-template("bob_library")
-{
+template("bob_library") {
   if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
   if(!defined(invoker.defines)) { invoker.defines = [] }
 
   invoker.include_dirs += extra_include_dirs
   invoker.defines += tag_configuration_defines
   
-  target(bob_library_type, target_name)
-  {
+  target(bob_library_type, target_name) {
     metadata = {}
     forward_variables_from(invoker, "*")
   }
 }
 
-template("bob_static_library")
-{
+template("bob_static_library") {
   if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
   if(!defined(invoker.defines)) { invoker.defines = [] }
 
   invoker.include_dirs += extra_include_dirs
   invoker.defines += tag_configuration_defines
   
-  static_library(target_name)
-  {
+  static_library(target_name) {
     metadata = {}
     forward_variables_from(invoker, "*")
   }
 }
 
-template("bob_shared_library")
-{
+template("bob_shared_library") {
   if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
   if(!defined(invoker.defines)) { invoker.defines = [] }
 
   invoker.include_dirs += extra_include_dirs
   invoker.defines += tag_configuration_defines
   
-  shared_library(target_name)
-  {
+  shared_library(target_name) {
     metadata = {}
     forward_variables_from(invoker, "*")
   }
 }
 
 bob_executable_config = get_path_info(":submodule_windows_ldconfig", "abspath")
-template("bob_executable")
-{
+template("bob_executable") {
   if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
   if(!defined(invoker.defines)) { invoker.defines = [] }
 
   invoker.include_dirs += extra_include_dirs
   invoker.defines += tag_configuration_defines
   
-  executable(target_name)
-  {
+  executable(target_name) {
     configs += [ bob_executable_config ]
     metadata = {}
     forward_variables_from(invoker, "*")
@@ -65,53 +57,60 @@ template("bob_executable")
 }
 
 bob_console_config = get_path_info(":submodule_console_ldconfig", "abspath")
-template("bob_console")
-{
+template("bob_console") {
   if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
   if(!defined(invoker.defines)) { invoker.defines = [] }
 
   invoker.include_dirs += extra_include_dirs
   invoker.defines += tag_configuration_defines
   
-  executable(target_name)
-  {
+  executable(target_name) {
     configs += [ bob_console_config ]
     metadata = {}
     forward_variables_from(invoker, "*")
   }
 }
 
-template("bob_source_set")
-{
+template("bob_source_set") {
   if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
   if(!defined(invoker.defines)) { invoker.defines = [] }
 
   invoker.include_dirs += extra_include_dirs
   invoker.defines += tag_configuration_defines
   
-  source_set(target_name)
-  {
+  source_set(target_name) {
     metadata = {}
     forward_variables_from(invoker, "*")
   }
 }
 
-template("bob_python")
-{
+template("bob_python") {
   if(!defined(invoker.include_dirs)) { invoker.include_dirs = [] }
   if(!defined(invoker.defines)) { invoker.defines = [] }
 
   invoker.include_dirs += extra_include_dirs
   invoker.defines += tag_configuration_defines
   
-  source_set(target_name)
-  {
+  source_set(target_name) {
     metadata = {}
     forward_variables_from(invoker, "*")
     metadata.custom_target_type = [ "python_library" ]
   }
 }
 
+template("bob_action") {
+  if(!defined(invoker.args)) { invoker.args = [] }
+
+  # GN Build Environment
+  invoker.args += bob_python_forward_arguments
+
+
+  action(target_name) {
+    forward_variables_from(invoker, "*")
+  }
+}
+
+#TODO: Does this make sense to keep inside of Bob? Should this be moved to BCS
 template("bob_resources") {
   action(target_name) {
     forward_variables_from(invoker, [ "data_deps", "deps", "public_deps", "visibility", "metadata", "sources", "inputs", "outputs", "args" ])
@@ -132,7 +131,7 @@ template("bob_resources") {
       "--bob-ewdk-dir", rebase_path(bob_ewdk_dir),
       "--bob-download-cache-dir", rebase_path(bob_download_cache_dir),
       "--bob-clang-frontend", rebase_path(bob_clang_frontend),
-      "--bob-clang-flags", rebase_path(bob_clang_flags),
+      "--bob-clang-flags", bob_clang_flags,
       "--target-os", target_os,
       "--target-config", target_config,
       "--target-link-config", target_link_config,
@@ -152,6 +151,7 @@ template("bob_resources") {
   }
 }
 
+#TODO: Does this make sense to keep inside of Bob? Should this be moved to BCS
 template("bob_hlsl") {
   action(target_name) {
     forward_variables_from(invoker, [ "data_deps", "deps", "public_deps", "visibility", "metadata", "sources", "inputs", "outputs", "args" ])

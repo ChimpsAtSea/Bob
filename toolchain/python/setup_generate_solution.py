@@ -24,6 +24,7 @@ project_setup.setup_solution_project_structure(solution, global_targets)
 project_setup.sln_setup_cpp_default_properties_file()
 
 for project in solution.projects:
+    if project.is_hidden(): continue
     sln.write_project(solution, project)
 sln.write_solution("solution/", solution)
 

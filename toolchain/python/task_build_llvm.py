@@ -139,6 +139,14 @@ class LLVMBuildTask(VisualCPPBuildTask):
                 ]
                 if util.bob_prebuild_use_lto:
                     cmake_args += [ '-DCMAKE_INTERPROCEDURAL_OPTIMIZATION:BOOL=1' ]
+                else:
+                    cmake_args += [ '-DCMAKE_INTERPROCEDURAL_OPTIMIZATION:BOOL=0' ]
+                if self.cmake_runtime_library == "MultiThreaded":
+                    # We can use a custom allocator when compiling with MT
+                    rpmalloc_dir = util.get_rpmalloc_dir()
+                    rpmalloc_arg = f'-DLLVM_INTEGRATED_CRT_ALLOC:PATH={os.path.realpath(rpmalloc_dir)}'
+                    util.dprint(rpmalloc_arg)
+                    cmake_args += [ rpmalloc_arg ]
 
                 print(f'CMake generating LLVM build files {self.build_folder_name}')
                 sys.stdout.flush()

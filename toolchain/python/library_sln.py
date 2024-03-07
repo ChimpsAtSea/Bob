@@ -155,7 +155,7 @@ class Project:
         return str(self.guid).upper()
 
     def get_project_directory(self):
-        project_directory = os.path.join(os.path.dirname(self.solution.filepath), '')
+        project_directory = os.path.join(os.path.dirname(self.solution.filepath), 'Projects')
         return project_directory
 
     def get_project_filepath(self):
@@ -300,6 +300,8 @@ def write_nested_projects(parent_folder : Folder, lines : list[str]):
 
 def write_solution_projects(lines : list[str], solution : Solution, write_all_build : bool):
     for project in solution.projects:
+        if project.is_hidden(): continue
+
         is_all_build = project.name == "all_build"
         write_all_deps = project.get_project_type() == "python_library"
         if write_all_build == is_all_build:
@@ -308,7 +310,7 @@ def write_solution_projects(lines : list[str], solution : Solution, write_all_bu
             guid = project.get_guid()
 
             #print(project.name, len(project.descriptions))
-            lines.append(f'Project("{{{type_guid}}}") = "{project.descriptions[0].description.target.name}", "{os.path.basename(project_filepath)}", "{{{guid}}}"')
+            lines.append(f'Project("{{{type_guid}}}") = "{project.descriptions[0].description.target.name}", "Projects\\{os.path.basename(project_filepath)}", "{{{guid}}}"')
             if write_all_deps:
                 for dependency in project.descriptions[0].description.deps:
                     #print(project.descriptions[0].description.deps)
@@ -338,6 +340,7 @@ def write_solution(output_directory: str, solution : Solution):
     lines.append(f'\tGlobalSection(ProjectConfigurationPlatforms) = postSolution')
     for osplatformconfig in solution.osplatformconfigs:
         for project in solution.projects:
+            if project.is_hidden(): continue
             project_guid = project.get_guid()
             type = project.get_project_type()
             if type == "python_library":
@@ -470,7 +473,7 @@ def write_cpp_project(solution : Solution, project : Project):
     lines.append(f'    <ProjectGuid>{{{str(project.guid).upper()}}}</ProjectGuid>')
     lines.append(f'    <Keyword>Win32Proj</Keyword>')
     lines.append(f'  </PropertyGroup>')
-    lines.append(f'  <Import Project="Cpp.Default.props" />')
+    lines.append(f'  <Import Project="$(SolutionDir)\\Cpp.Default.props" />')
     lines.append(f'  <PropertyGroup Label="Configuration">')
     lines.append(f'    <CharacterSet>Unicode</CharacterSet>')
     lines.append(f'    <ConfigurationType>Makefile</ConfigurationType>')
@@ -498,7 +501,7 @@ def write_cpp_project(solution : Solution, project : Project):
             output_directory = gn.system_path(util.get_project_root_dir(), osplatformconfig.output_root)
             ninja = util.get_ninja()
             if util.debug:
-                build_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
+                build_command = f'"{ninja}"  -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
                 rebuild_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}"'
                 clean_command = f'"{ninja}" -winmutex Global\BlamCreationSuite -d explain -C "{output_directory}" -tclean'
             else:
@@ -512,12 +515,13 @@ def write_cpp_project(solution : Solution, project : Project):
             if project.name == "all_build":
                 rebuild_command = ""
 
+            project_type = project.get_project_type()
+
             if project.is_nobuild():
                 build_command = "rem"
                 rebuild_command = "rem"
                 clean_command = "rem"
-            elif len(project.descriptions[0].description.outputs) == 0 and project.name != "all_build":
-                project_type = project.get_project_type()
+            elif len(project.descriptions[0].description.outputs) == 0 and project.name != "all_build" and project_type != 'group':
                 print(f"Warning: Project {project.name} of type {project_type} has no outputs but is marked for build")
 
 
@@ -553,6 +557,7 @@ def write_cpp_project(solution : Solution, project : Project):
         
         lines.append(f'  <PropertyGroup Condition="\'$(Configuration)|$(Platform)\'==\'{osplatformconfig.vs_triplet}\'">')
         lines.append(f'    <BobRootOutputDir>{os.path.join(util.get_project_root_dir(), "solution", osplatformconfig.fs_triplet)}</BobRootOutputDir>')
+        lines.append(f'    <BobOSPlatformConfigFolder>{osplatformconfig.fs_triplet}</BobOSPlatformConfigFolder>')
         lines.append(f'    <BobTargetOutputDir>{os.path.dirname(output_file)}</BobTargetOutputDir>')
         lines.append(f'    <NMakeOutput>{output_file}</NMakeOutput>')
         lines.append(f'    <NMakePreprocessorDefinitions>{";".join(preprocessor_definitions + ["$(NMakePreprocessorDefinitions)"])}</NMakePreprocessorDefinitions>')

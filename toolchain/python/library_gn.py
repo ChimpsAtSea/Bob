@@ -374,7 +374,7 @@ def _generate_build_configuration_files_command(target_os: str, target_config: s
 
 def generate_build_configuration_files(target_os: str, target_config: str, target_link_config: str, target_cpu: str, tag_configuration_triplets_concat : str, regenerate : bool):
     command = _generate_build_configuration_files_command(target_os, target_config, target_link_config, target_cpu, tag_configuration_triplets_concat, regenerate)
-
+    
     process = subprocess.run(command, cwd=util.get_project_root_dir(), shell=True, stdout=subprocess.PIPE)
     stdout = process.stdout
     if not process.returncode:
@@ -481,8 +481,8 @@ def get_descriptions(output_directory: str) -> dict:
     gn = util.get_gn()
     command = f'{gn} desc --format=json \"{output_directory}\" \"*\"'
     process = subprocess.run(command, shell=True, stdout=subprocess.PIPE)
+    [output, json_string] = parse_gn_json_output_object(process.stdout.decode('utf-8'))
     if not process.returncode:
-        [output, json_string] = parse_gn_json_output_object(process.stdout.decode('utf-8'))
         if output:
             print(output)
         try:

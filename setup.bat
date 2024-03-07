@@ -25,18 +25,18 @@ rem Install 7z
 set bob_7z_dir=%bob_third_party_dir%\7-Zip\7z2201-x64
 IF NOT EXIST %bob_download_cache_dir%\7z2201-x64.msi curl -L --show-error https://www.7-zip.org/a/7z2201-x64.msi -o %bob_download_cache_dir%\7z2201-x64.msi
 IF NOT EXIST %bob_third_party_dir%\7z2201-x64\Files\7-Zip\7z.exe (
-    msiexec /a %bob_download_cache_dir%\7z2201-x64.msi /qn TARGETDIR=%bob_project_root%\temp_7zextract\
+    msiexec /a %bob_download_cache_dir%\7z2201-x64.msi /qn TARGETDIR=%bob_root%\temp_7zextract\
     if not !ERRORLEVEL! == 0 (
         echo 7z msiexec failed !ERRORLEVEL!
-        echo msiexec /a %bob_download_cache_dir%\7z2201-x64.msi /qn TARGETDIR=%bob_project_root%\temp_7zextract\
+        echo msiexec /a %bob_download_cache_dir%\7z2201-x64.msi /qn TARGETDIR=%bob_root%\temp_7zextract\
         exit /B !ERRORLEVEL!
     )
     if not exist %bob_7z_dir% (
         mkdir %bob_7z_dir%\
     )
-    xcopy /I /Q /Y /E "%bob_project_root%\temp_7zextract\" "%bob_7z_dir%\" > nul
-    del /s /q "%bob_project_root%\temp_7zextract\" > nul
-    rmdir /s /q "%bob_project_root%\temp_7zextract\" > nul
+    xcopy /I /Q /Y /E "%bob_root%\temp_7zextract\" "%bob_7z_dir%\" > nul
+    del /s /q "%bob_root%\temp_7zextract\" > nul
+    rmdir /s /q "%bob_root%\temp_7zextract\" > nul
 )
 
 rem Download Python

@@ -35,16 +35,16 @@ class BobArgumentParser(argparse.ArgumentParser):
 parser = BobArgumentParser()
 
 cmd_bob_root_directory = '--bob-root-directory'
-parser.add_dir_argument(cmd_bob_root_directory , required=True)
+parser.add_dir_argument(cmd_bob_root_directory, required=True)
 
 cmd_bob_download_cache_directory = '--bob-download-cache-directory'
-parser.add_dir_argument(cmd_bob_download_cache_directory , required=True)
+parser.add_dir_argument(cmd_bob_download_cache_directory, required=True)
 
 cmd_bob_thirdparty_directory = '--bob-thirdparty-directory'
-parser.add_dir_argument(cmd_bob_thirdparty_directory , required=True)
+parser.add_dir_argument(cmd_bob_thirdparty_directory, required=True)
 
 cmd_bob_project_root_directory = '--bob-project-root-directory'
-parser.add_dir_argument(cmd_bob_project_root_directory , required=True)
+parser.add_dir_argument(cmd_bob_project_root_directory, required=True)
 
 cmd_bob_solution_pretty_name = '--bob-solution-pretty-name'
 parser.add_argument(cmd_bob_solution_pretty_name)
@@ -56,43 +56,43 @@ cmd_bob_use_clang_frontend = '--bob-use-clang-frontend'
 parser.add_argument(cmd_bob_use_clang_frontend)
 
 cmd_bob_build_arch = '--bob-build-arch'
-parser.add_argument(cmd_bob_build_arch , type=str, choices=['x86', 'x64', 'arm', 'arm64', 'webassembly'])
+parser.add_argument(cmd_bob_build_arch, type=str, choices=['x86', 'x64', 'arm', 'arm64', 'webassembly'])
 
 cmd_bob_build_target = '--bob-build-target'
-parser.add_argument(cmd_bob_build_target , type=str, choices=['all', 'windows', 'linux', 'webassembly'])
+parser.add_argument(cmd_bob_build_target, type=str, choices=['all', 'windows', 'linux', 'webassembly'])
 
 cmd_bob_enable_profile = '--bob-enable-profile'
-parser.add_argument(cmd_bob_enable_profile , type=str)
+parser.add_argument(cmd_bob_enable_profile, type=str)
 
 cmd_bob_prebuild_force = '--bob-prebuild-force'
-parser.add_argument(cmd_bob_prebuild_force , type=str)
+parser.add_argument(cmd_bob_prebuild_force, type=str)
 
 cmd_bob_prebuild_max_threads = '--bob-prebuild-max-threads'
-parser.add_argument(cmd_bob_prebuild_max_threads , type=int)
+parser.add_argument(cmd_bob_prebuild_max_threads, type=int)
 
 cmd_bob_prebuild_use_lto = '--bob-prebuild-use-lto'
-parser.add_argument(cmd_bob_prebuild_use_lto , type=str)
+parser.add_argument(cmd_bob_prebuild_use_lto, type=str)
 
 cmd_bob_required_modules = '--bob-required-modules'
-parser.add_argument(cmd_bob_required_modules , type=str)
+parser.add_argument(cmd_bob_required_modules, type=str)
 
 cmd_bob_use_invalid_files = '--bob-use-invalid-files'
-parser.add_argument(cmd_bob_use_invalid_files , type=str)
+parser.add_argument(cmd_bob_use_invalid_files, type=str)
 
 cmd_llvm_build_configs = '--llvm-build-configs'
-parser.add_argument(cmd_llvm_build_configs , type=str)
+parser.add_argument(cmd_llvm_build_configs, type=str)
 
 cmd_gn_target_os = '--gn-target-os'
-parser.add_argument(cmd_gn_target_os , type=str)
+parser.add_argument(cmd_gn_target_os, type=str)
 
 cmd_gn_target_config = '--gn-target-config'
-parser.add_argument(cmd_gn_target_config , type=str)
+parser.add_argument(cmd_gn_target_config, type=str)
 
 cmd_gn_target_link_config = '--gn-target-link-config'
-parser.add_argument(cmd_gn_target_link_config , type=str)
+parser.add_argument(cmd_gn_target_link_config, type=str)
 
 cmd_gn_target_cpu = '--gn-target-cpu'
-parser.add_argument(cmd_gn_target_cpu , type=str)
+parser.add_argument(cmd_gn_target_cpu, type=str)
 
 cmd_gn_root_build_dir = '--gn-root-build-dir'
 parser.add_dir_argument(cmd_gn_root_build_dir)
@@ -113,32 +113,34 @@ cmd_gn_target_src_dir = '--gn-target-src-dir'
 parser.add_dir_argument(cmd_gn_target_src_dir)
 
 cmd_tool_engine = '--tool-engine'
-parser.add_argument(cmd_tool_engine , type=str)
+parser.add_argument(cmd_tool_engine, type=str)
 
 cmd_tool_platform = '--tool-platform'
-parser.add_argument(cmd_tool_platform , type=str)
+parser.add_argument(cmd_tool_platform, type=str)
 
 cmd_tool_build = '--tool-build'
-parser.add_argument(cmd_tool_build , type=str)
+parser.add_argument(cmd_tool_build, type=str)
 
 cmd_tool_dxc_passthrough = '--tool-dxc-passthrough'
-parser.add_argument(cmd_tool_dxc_passthrough , type=str)
+parser.add_argument(cmd_tool_dxc_passthrough, type=str)
 
 cmd_tool_inputs = '--tool-inputs'
-parser.add_argument(cmd_tool_inputs , type=str)
+parser.add_argument(cmd_tool_inputs, type=str)
 
 cmd_tool_outputs = '--tool-outputs'
-parser.add_argument(cmd_tool_outputs , type=str)
+parser.add_argument(cmd_tool_outputs, type=str)
 
 cmd_tool_sources = '--tool-sources'
-parser.add_argument(cmd_tool_sources , type=str)
+parser.add_argument(cmd_tool_sources, type=str)
 
 cmd_tool_output_subdirectory = '--tool-output-subdirectory'
-parser.add_argument(cmd_tool_output_subdirectory , type=str)
+parser.add_argument(cmd_tool_output_subdirectory, type=str)
 
 cmd_debug = '--debug'
-parser.add_argument(cmd_debug , type=str)
+parser.add_argument(cmd_debug, action='store_true')
 
+cmd_build_gn = '--build-gn'
+parser.add_argument(cmd_build_gn, action='store_true')
 
 args, unknown = parser.parse_known_args()
 
@@ -153,7 +155,8 @@ def parse_argument_bool(argument : str):
         return False
     return any(argument.lower() == s for s in ['true', 'yes', '1'])
 
-debug = parse_argument_bool(get_argument('debug', 'false'))
+build_gn : bool = get_argument('build_gn', False)
+debug = get_argument('debug', False)
 bob_prebuild_use_lto = parse_argument_bool(get_argument('bob_prebuild_use_lto', 'false'))
 bob_use_clang_frontend = parse_argument_bool(get_argument('bob_use_clang_frontend', 'false'))
 bob_use_invalid_files = parse_argument_bool(get_argument('bob_use_invalid_files', 'false'))
@@ -312,6 +315,8 @@ def get_winpix3_dir(subpath : str = None):
     return _get_thirdparty_subdir('winpix3', None, subpath)
 def get_ida_sdk_dir(subpath : str = None):
     return _get_thirdparty_subdir('idasdk', 'idasdk/idasdk77', subpath)
+def get_rpmalloc_dir(subpath : str = None):
+    return _get_thirdparty_subdir('rpmalloc', 'rpmalloc/rpmalloc', subpath)
 
 #TODO Your Ass, My Size-24 Hoof
 def get_llvm_root_dir(subpath : str = None):
@@ -337,18 +342,21 @@ def _get_thirdparty_executable_exists(directory, filename):
         raise Exception(f'Requested thirdparty filepath doesn\'t exist', filepath, directory, filename)
     return filepath
 
+default_llvm_config = 'release'
+defualt_llvm_msvc_runtime_library = 'MT'
+
 def get_llvm_clang():
-    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir('release', 'MD'), f'clang{host_executable_suffix}')
+    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir(default_llvm_config, defualt_llvm_msvc_runtime_library), f'clang{host_executable_suffix}')
 def get_llvm_ar():
-    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir('release', 'MD'), f'llvm-ar{host_executable_suffix}')
+    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir(default_llvm_config, defualt_llvm_msvc_runtime_library), f'llvm-ar{host_executable_suffix}')
 def get_llvm_ld():
-    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir('release', 'MD'), f'lld{host_executable_suffix}')
+    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir(default_llvm_config, defualt_llvm_msvc_runtime_library), f'lld{host_executable_suffix}')
 def get_llvm_lld_link():
-    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir('release', 'MD'), f'lld-link{host_executable_suffix}')
+    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir(default_llvm_config, defualt_llvm_msvc_runtime_library), f'lld-link{host_executable_suffix}')
 def get_llvm_wasm_ld():
-    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir('release', 'MD'), f'wasm-ld{host_executable_suffix}')
+    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir(default_llvm_config, defualt_llvm_msvc_runtime_library), f'wasm-ld{host_executable_suffix}')
 def get_llvm_ld_lld():
-    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir('release', 'MD'), f'ld.lld{host_executable_suffix}')
+    return _get_thirdparty_executable_exists(get_llvm_build_bin_dir(default_llvm_config, defualt_llvm_msvc_runtime_library), f'ld.lld{host_executable_suffix}')
 
 def get_gn():
     return _get_thirdparty_executable_exists(get_gn_dir(), f'gn{host_executable_suffix}')
